@@ -1,6 +1,6 @@
 //! Instructions implementation for Turing Machine RS
 //!
-//! This module provides unit struct named "Instruction" for implementing
+//! This module provides unit struct named [`Instruction`] for implementing
 //! this type for any types which implements [`Symbol`] trait.
 //!
 //! Instruction type and components doesn't know about meaning of their
