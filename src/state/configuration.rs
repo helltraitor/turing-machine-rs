@@ -11,7 +11,7 @@ use crate::Symbol;
 pub struct Configuration<S: Symbol> {
     tape: Tape<S>,
     index: usize,
-    /// [`Configuration`] state is using by Turing Machine
+    /// [`Configuration`] state is using by [`crate::TuringMachine`]
     /// and cannot be changed by self methods.
     pub state: u32,
 }
