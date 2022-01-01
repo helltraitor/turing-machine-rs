@@ -12,11 +12,7 @@ pub struct Tail<S: Symbol> {
 
 impl<S: Symbol> Tail<S> {
     pub fn new(state: u32, symbol: S, direction: Direction) -> Self {
-        Tail {
-            state,
-            symbol,
-            direction,
-        }
+        Tail { state, symbol, direction }
     }
 }
 
