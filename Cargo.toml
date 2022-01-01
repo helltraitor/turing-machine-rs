@@ -1,0 +1,29 @@
+[package]
+name = "turing-machine-rs"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.56"
+authors = ["Helltraitor <helltraitor@hotmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "FILL ME by github.com"
+homepage = "FILL ME by project-name.github.io"
+description = """
+Open library for implementation Turing Machines.
+"""
+
+categories = ["mathematics", "science", "simulation"]
+keywords = [
+    "cross-platform",
+    "library",
+    "math",
+    "turing",
+    "science",
+    "simulation",
+    "turing-machine",
+]
+
+[features]
+default = []
+string-as-copy = []
+str-as-copy = []
