@@ -9,10 +9,9 @@ pub struct Tape<S: Symbol> {
 }
 
 impl<S: Symbol> Tape<S> {
+    #[rustfmt::skip]
     pub fn new(chars: impl IntoIterator<Item = S>) -> Self {
-        Tape {
-            tape: Vec::from_iter(chars),
-        }
+        Tape { tape: Vec::from_iter(chars) }
     }
 
     pub fn as_vec(&self) -> &Vec<S> {
@@ -42,17 +41,12 @@ impl<S: Symbol> Tape<S> {
 }
 
 impl<S: Symbol> Display for Tape<S> {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(
-            f,
-            "{}",
-            &self
-                .tape
-                .clone()
-                .into_iter()
-                .map(|s| s.to_string())
-                .collect::<String>()
-        )
+        write!(f, "{}", &self.tape.clone()
+                                  .into_iter()
+                                  .map(|s| s.to_string())
+                                  .collect::<String>())
     }
 }
 
