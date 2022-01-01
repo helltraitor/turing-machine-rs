@@ -20,9 +20,9 @@ jobs:
     - uses: actions/checkout@main
     - uses: dtolnay/rust-toolchain@nightly
     - name: Builds
-    - run: cargo build --verbose
+    run: cargo build --verbose
     - name: Tests
-    - run: cargo test --verbose
+    run: cargo test --verbose
       
   ubuntu_build:
     name: Ubuntu latest crate build and test
@@ -32,9 +32,9 @@ jobs:
     - uses: actions/checkout@main
     - uses: dtolnay/rust-toolchain@nightly
     - name: Builds
-    - run: cargo build --verbose
+    run: cargo build --verbose
     - name: Tests
-    - run: cargo test --verbose
+    run: cargo test --verbose
     
   windows_build:
     name: Windows latest crate build and test
@@ -44,6 +44,6 @@ jobs:
     - uses: actions/checkout@main
     - uses: dtolnay/rust-toolchain@nightly
     - name: Builds
-    - run: cargo build --verbose
+    run: cargo build --verbose
     - name: Tests
-    - run: cargo test --verbose
+    run: cargo test --verbose
