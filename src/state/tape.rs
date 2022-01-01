@@ -64,9 +64,7 @@ impl From<&str> for Tape<char> {
 
 impl From<String> for Tape<char> {
     fn from(string: String) -> Self {
-        Tape {
-            tape: Vec::from_iter(string.chars()),
-        }
+        Tape::new(string.chars())
     }
 }
 
@@ -80,8 +78,6 @@ impl From<&str> for Tape<Box<char>> {
 #[cfg(not(feature = "string-as-copy"))]
 impl From<String> for Tape<Box<char>> {
     fn from(string: String) -> Self {
-        Tape {
-            tape: Vec::from_iter(string.chars().map(Box::new)),
-        }
+        Tape::new(string.chars().map(Box::new))
     }
 }
