@@ -8,14 +8,20 @@ A library for implementing any turing machines with minimal limitations for Rust
 
 [![Crates.io][crates-badge]][crates-url]
 [![MIT licensed][mit-badge]][mit-url]
-[![Build Status][actions-badge]][actions-url]
+[![Rust 2021][actions-2021-badge]][actions-2021-url]
+[![Rust Stable][actions-stable-badge]][actions-stable-url]
+[![Rust Nightly][actions-nightly-badge]][actions-nightly-url]
 
 [crates-badge]: https://img.shields.io/FILL_SHIELDS_BADGE
 [crates-url]: https://crates.io/crates/FILL_CRATES_URL
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [mit-url]: https://github.com/FILL_LICENSE_PATH
-[actions-badge]: https://github.com/FILL_ATCTION_BADGE
-[actions-url]: https://github.com/FILL_ACTION_URL
+[actions-2021-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_2021.yml/badge.svg
+[actions-2021-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_2021.yml
+[actions-stable-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
+[actions-stable-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
+[actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
+[actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
 
 [Website](FILL_ME) |
 [Guides](FILL_GITHUB_IO_TUTORIAL) |
@@ -92,13 +98,13 @@ If you want to improve this crate, just open an issue and describe the problem (
 
 ## Supported Rust Versions
 
-Turing Machine RS was created in lastest stable version (2021, 1.57) but this library also support FILL_ME and above.
+Turing Machine RS was created in lastest stable version (2021, 1.57) but this library also support 1.56.0 (at least) and above.
 
 ## License
 
 This project is licensed under the [MIT license].
 
-[MIT license]: https://github.com/FILL_ME
+[MIT license]: https://github.com/Helltraitor/turing-machine-rs/blob/main/LICENSE
 
 ### Contribution
 
