@@ -1,0 +1,49 @@
+name: Rust Nightly
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule: [cron: "00 12 * * 5"]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  mac_build:
+    name: Mac latest crate build and test
+    runs-on: mac-latest
+
+    steps:
+    - uses: actions/checkout@main
+    - uses: dtolnay/rust-toolchain@nightly
+    - name: Builds
+    - run: cargo build --verbose
+    - name: Tests
+    - run: cargo test --verbose
+      
+  ubuntu_build:
+    name: Ubuntu latest crate build and test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@main
+    - uses: dtolnay/rust-toolchain@nightly
+    - name: Builds
+    - run: cargo build --verbose
+    - name: Tests
+    - run: cargo test --verbose
+    
+  windows_build:
+    name: Windows latest crate build and test
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@main
+    - uses: dtolnay/rust-toolchain@nightly
+    - name: Builds
+    - run: cargo build --verbose
+    - name: Tests
+    - run: cargo test --verbose
