@@ -10,7 +10,7 @@ use crate::Symbol;
 /// or within [`Tape::from`] but only for [`str`] and [`String`] types.
 /// In the second case, you must be sure that you use type annotation
 /// or use `str-as-copy` \ `string-as-copy` features.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Tape<S: Symbol> {
     tape: Vec<S>,
 }

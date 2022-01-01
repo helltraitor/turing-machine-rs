@@ -4,7 +4,7 @@ use crate::instruction::Direction;
 use crate::state::Tape;
 use crate::Symbol;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Configuration<S: Symbol> {
     tape: Tape<S>,
     index: usize,
