@@ -81,7 +81,7 @@ First, read [tutorial] or [examples]. If tutorial can't provides answers for you
 * [Feature flag doc][feature-flag-docs]
 
 [tutorial]: FILL_ME
-[examples]: https://github.com/FILL_EXAMPLES
+[examples]: https://github.com/Helltraitor/turing-machine-rs/tree/main/examples
 [api-documentation]: https://docs.rs/FILL_ME
 [feature-flag-docs]: https://docs.rs/FILL_ME
 
