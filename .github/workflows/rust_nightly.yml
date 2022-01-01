@@ -14,7 +14,7 @@ env:
 jobs:
   mac_build:
     name: Mac latest crate build and test
-    runs-on: mac-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@main
