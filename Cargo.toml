@@ -6,8 +6,7 @@ rust-version = "1.56"
 authors = ["Helltraitor <helltraitor@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "FILL ME by github.com"
-homepage = "FILL ME by project-name.github.io"
+repository = "https://github.com/Helltraitor/turing-machine-rs"
 description = """
 Open library for implementation Turing Machines.
 """
