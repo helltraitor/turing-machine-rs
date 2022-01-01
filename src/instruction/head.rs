@@ -11,7 +11,7 @@ pub struct Head<S: Symbol> {
     /// have another type (such as wrapped usize), but it's really hardly
     /// likely to reach limit.
     pub state: u32,
-    /// Any struct or object which implements [`crate::Symbol`] trait.
+    /// Any struct or object which implements [`Symbol`] trait.
     pub symbol: S,
 }
 

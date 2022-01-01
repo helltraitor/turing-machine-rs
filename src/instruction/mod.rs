@@ -1,7 +1,7 @@
 //! Instructions implementation for Turing Machine RS
 //!
 //! This module provides unit struct named "Instruction" for implementing
-//! this type for any types which implements [`crate::Symbol`] trait.
+//! this type for any types which implements [`Symbol`] trait.
 //!
 //! Instruction type and components doesn't know about meaning of their
 //! fields for another structs. This module doesn't provides any checks
@@ -41,11 +41,11 @@ use crate::Symbol;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Instruction<S: Symbol> {
     /// First part of instruction, contains state [`u32`]
-    /// and symbol of type which implements [`crate::Symbol`] trait.
+    /// and symbol of type which implements [`Symbol`] trait.
     pub head: Head<S>,
     /// First part of instruction, contains state [`u32`],
-    /// symbol of type which implements [`crate::Symbol`] trait
-    /// and direction [`crate::instruction::Direction`].
+    /// symbol of type which implements [`Symbol`] trait
+    /// and direction [`Direction`].
     pub tail: Tail<S>,
 }
 
