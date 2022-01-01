@@ -10,8 +10,6 @@ pub struct Tape<S: Symbol> {
 
 impl<S: Symbol> Tape<S> {
     #[rustfmt::skip]
-    pub fn new(chars: impl IntoIterator<Item = S>) -> Self {
-        Tape { tape: Vec::from_iter(chars) }
     }
 
     pub fn as_vec(&self) -> &Vec<S> {
@@ -27,7 +25,6 @@ impl<S: Symbol> Tape<S> {
     }
 
     pub fn is_empty(&self) -> bool {
-        // Turing tape cannot be empty but our tape type can
         self.tape.is_empty()
     }
 
