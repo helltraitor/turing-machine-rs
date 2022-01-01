@@ -23,8 +23,6 @@ A library for implementing any turing machines with minimal limitations for Rust
 [actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
 [actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
 
-[Website](FILL_ME) |
-[Guides](FILL_GITHUB_IO_TUTORIAL) |
 [API Docs](https://docs.rs/FILL_ME)
 
 ## Overview
@@ -78,10 +76,9 @@ To see a list of the available features flags that can be enabled, check [docs][
 
 ## Getting Help
 
-First, read [tutorial] or [examples]. If tutorial can't provides answers for you then you can try to read docs and after all of it you can contact with me: <helltraitor@hotmail.com>
+First, read [examples][examples] or [api][api-documentation]. If tutorial can't provides answers for you then you can try to read docs and after all of it you can contact with me: <helltraitor@hotmail.com>
 
 ### Major links:
-* [Tutorial][tutorial]
 * [Examples][examples]
 * [API documentation][api-documentation]
 * [Feature flag doc][feature-flag-docs]
