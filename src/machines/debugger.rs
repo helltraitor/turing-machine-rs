@@ -5,6 +5,7 @@ use crate::{Symbol, TuringMachine};
 type CHandler<S> = Box<dyn Fn(&Configuration<S>)>;
 type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 
+#[allow(clippy::needless_doctest_main)]
 /// [`Debugger`] is an super useful [`TuringMachine`] for debugging another
 /// Turing machines! All Turing Machines in tests were debugging by this machine.
 ///

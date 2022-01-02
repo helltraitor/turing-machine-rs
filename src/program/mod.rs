@@ -6,24 +6,6 @@
 //!
 //! # Warning
 //! [`Program`] can panic!
-//!
-//! # Examples
-//! ```rust
-//! use turing_machine_rs::instruction::Direction;
-//! use turing_machine_rs::program::{ExtendBy, Program};
-//!
-//! fn main() {
-//!     let mut program = Program::new(vec!['0', '1'], 3);
-//!     program.extend_by([
-//!         (1, '0', 1, '0', Direction::Right),
-//!         (1, '1', 2, '1', Direction::Right),
-//!         (2, '0', 3, '0', Direction::Left),
-//!         (2, '1', 2, '1', Direction::Right),
-//!         (3, '0', 0, '0', Direction::Center),
-//!         (3, '1', 3, '0', Direction::Left)
-//!     ]);
-//! }
-//! ```
 
 use std::fmt::{Display, Error, Formatter};
 
@@ -50,19 +32,6 @@ impl<S: Symbol> Program<S> {
     ///
     /// # Panics
     /// Panics when `alphabet.is_empty` or l_state equals to `0`.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::program::Program;
-    ///
-    /// fn main() {
-    ///     // This is fine
-    ///     let _ = Program::new(vec!['0'], 1);
-    ///     // These will panic!
-    ///     // let _ = Program::new(vec![], 1);
-    ///     // let _ = Program::new(vec!['0'], 0);
-    /// }
-    /// ```
     #[rustfmt::skip]
     pub fn new(alphabet: Vec<S>, l_state: u32) -> Self {
         assert!(!alphabet.is_empty(), "new error: alphabet cannot be empty");

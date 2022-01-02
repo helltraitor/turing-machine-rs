@@ -9,18 +9,6 @@
 //! (no one of methods can change these structs).
 //!
 //! All of these structs could be used without type annotations.
-//!
-//! # Example
-//! ```rust
-//! use turing_machine_rs::instruction::{Direction, Head, Instruction, Tail};
-//!
-//! fn main () {
-//!     let head = Head::new(1, '0');
-//!     let tail = Tail::new(0, '1', Direction::Center);
-//!
-//!     let inst = Instruction::new(head, tail);
-//! }
-//! ```
 
 mod direction;
 mod head;

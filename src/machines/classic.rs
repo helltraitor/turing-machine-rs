@@ -19,21 +19,6 @@ impl<S: Symbol> Classic<S> {
     ///
     /// # Panics
     /// Panics when default symbol is not in alphabet.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::TuringMachine;
-    /// use turing_machine_rs::machines::Classic;
-    /// use turing_machine_rs::program::Program;
-    ///
-    /// fn main() {
-    ///     let program = Program::new(vec![' '], 1);
-    ///     // This is fine
-    ///     let _ = Classic::new(program, ' ');
-    ///     // This will panic!
-    ///     // let _ = Classic::new(program, '!');
-    /// }
-    /// ```
     pub fn new(program: Program<S>, default: S) -> Self {
         assert!(
             program.alphabet().contains(&default),
@@ -96,30 +81,6 @@ impl<S: Symbol> With<Classic<S>> for Classic<S> {
     /// Makes superposition with two or more [`Classic`] machines by chain.
     /// This method accept only [`Classic`] struct and can be used only for
     /// another [`Classic`] machine.
-    ///
-    /// # Example
-    /// ```rust, ignore
-    /// use turing_machine_rs::{TuringMachine, With};
-    /// use turing_machine_rs::machines::Classic;
-    ///
-    /// // Machines implementations are hidden (takes to much space)
-    /// // These machines implementations could be seing in `machines_classic.rs`
-    ///
-    /// fn main() {
-    ///     let zerofy = new_zerofy_machine();
-    ///     let left_shift = new_left_shift_machine();
-    ///     let right_shift = new_right_shift_machine();
-    ///     let trans = new_trans_machine();
-    ///
-    ///     let choose_machine = right_shift
-    ///         .with(&trans)
-    ///         .with(&right_shift)
-    ///         .with(&zerofy)
-    ///         .with(&left_shift)
-    ///         .with(&zerofy)
-    ///         .with(&left_shift);
-    /// }
-    /// ```
     fn with(&self, other: &Classic<S>) -> Self::Output {
         if self.program.alphabet() != other.program.alphabet() {
             return None;

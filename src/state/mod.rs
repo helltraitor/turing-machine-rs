@@ -19,32 +19,6 @@
 //!
 //! # Warning
 //! [`Configuration`] and [`Tape`] can panic!
-//!
-//! # Examples
-//! No features, no machines.
-//! ```rust
-//! use turing_machine_rs::state::{Configuration, Tape};
-//!
-//! fn main() {
-//!     let _: Configuration<char> = Configuration::new_std(Tape::from("test"));
-//!     // BOTH ALLOWED
-//!     let _: Configuration<Box<char>> = Configuration::new_std(Tape::from("test"));
-//! }
-//! ```
-//!
-//! `str-as-copy` feature, no machines.
-//!
-//! Note: this code will not running when doc tests because it's impossible to
-//! activate feature for code shipped.
-//! ```rust, ignore
-//! use turing_machine_rs::state::{Configuration, Tape};
-//!
-//! fn main() {
-//!     let _ = Configuration::new_std(Tape::from("test"));
-//!     // Caused mistype error
-//!     // let _: Configuration<Box<char>> = Configuration::new_std(Tape::from("test"));
-//! }
-//! ```
 
 mod configuration;
 mod tape;

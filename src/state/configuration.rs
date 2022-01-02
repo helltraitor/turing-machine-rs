@@ -22,18 +22,6 @@ impl<S: Symbol> Configuration<S> {
     ///
     /// # Panics
     /// Panics when index is out of tape bounds.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::{Configuration, Tape};
-    ///
-    /// fn main() {
-    ///     // This is fine
-    ///     let _ = Configuration::new(Tape::new(['0']), 0, 1);
-    ///     // This will panic!
-    ///     // let _ = Configuration::new(Tape::new(['0']), 1, 1);
-    /// }
-    /// ```
     pub fn new(tape: Tape<S>, index: usize, state: u32) -> Self {
         assert!(
             tape.len() > index,
@@ -50,18 +38,6 @@ impl<S: Symbol> Configuration<S> {
     ///
     /// # Panics
     /// Panics when tape is empty.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::{Configuration, Tape};
-    ///
-    /// fn main() {
-    ///     // This is fine
-    ///     let _ = Configuration::new_nrm(Tape::new(['0']));
-    ///     // This will panic!
-    ///     // let _ = Configuration::new_nrm(Tape::new([]));
-    /// }
-    /// ```
     pub fn new_nrm(tape: Tape<S>) -> Configuration<S> {
         Configuration::new(tape, 0, 1)
     }
@@ -72,18 +48,6 @@ impl<S: Symbol> Configuration<S> {
     ///
     /// # Panics
     /// Panics when tape is empty.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::{Configuration, Tape};
-    ///
-    /// fn main() {
-    ///     // This is fine
-    ///     let _ = Configuration::new_std(Tape::new(['0']));
-    ///     // This will panic!
-    ///     // let _ = Configuration::new_std(Tape::new([]));
-    /// }
-    /// ```
     pub fn new_std(tape: Tape<S>) -> Configuration<S> {
         let last = tape.len() - 1;
         Configuration::new(tape, last, 1)

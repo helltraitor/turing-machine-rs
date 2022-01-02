@@ -98,6 +98,7 @@ pub trait TuringMachine<S: Symbol> {
     /// realization can variates depends to machine type.
     fn execute_once(&self, conf: Configuration<S>) -> Configuration<S>;
 
+    #[allow(clippy::needless_doctest_main)]
     /// Executes program untill stop predicate equals to `false` and returns
     /// a mutated [`Configuration`].
     ///

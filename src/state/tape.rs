@@ -57,19 +57,6 @@ impl<S: Symbol> Tape<S> {
     ///
     /// # Panics
     /// Panic if the index is out of bounds.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::Tape;
-    ///
-    /// fn main() {
-    ///     let mut tape = Tape::new(['0']);
-    ///     // This is fine
-    ///     tape.set(0, '1');
-    ///     // This will panic!
-    ///     // tape.set(1, '2');
-    /// }
-    /// ```
     pub fn set(&mut self, index: usize, element: S) {
         self.tape[index] = element;
     }
@@ -88,15 +75,6 @@ impl<S: Symbol> Display for Tape<S> {
 impl From<&str> for Tape<char> {
     /// Constructs [`Tape<char>`] from [`str`]. Always available but needs using
     /// type annotation [`Tape<char>`] when feature `str-as-copy` is not using.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::Tape;
-    ///
-    /// fn main() {
-    ///     let _: Tape<char> = Tape::from("test");
-    /// }
-    /// ```
     fn from(string: &str) -> Self {
         Tape::new(string.chars())
     }
@@ -105,15 +83,6 @@ impl From<&str> for Tape<char> {
 impl From<String> for Tape<char> {
     /// Constructs [`Tape<char>`] from [`String`]. Always available but needs using
     /// type annotation [`Tape<char>`] when feature `string-as-copy` is not using.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::Tape;
-    ///
-    /// fn main() {
-    ///     let _: Tape<char> = Tape::from(String::from("test"));
-    /// }
-    /// ```
     fn from(string: String) -> Self {
         Tape::new(string.chars())
     }
@@ -126,15 +95,6 @@ impl From<&str> for Tape<Box<char>> {
     /// [`Tape<Box<char>>`]. Most cases of using this 'feature' is in tests
     /// as proof of concept. There is no reason to use more complicated
     /// [`Clone`] only structs.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::Tape;
-    ///
-    /// fn main() {
-    ///     let _: Tape<Box<char>> = Tape::from("test");
-    /// }
-    /// ```
     fn from(string: &str) -> Self {
         Tape::new(string.chars().map(Box::new))
     }
@@ -147,15 +107,6 @@ impl From<String> for Tape<Box<char>> {
     /// [`Tape<Box<char>>`]. Most cases of using this 'feature' is in tests
     /// as proof of concept. There is no reason to use more complicated
     /// [`Clone`] only structs.
-    ///
-    /// # Example
-    /// ```rust
-    /// use turing_machine_rs::state::Tape;
-    ///
-    /// fn main() {
-    ///     let _: Tape<Box<char>> = Tape::from(String::from("test"));
-    /// }
-    /// ```
     fn from(string: String) -> Self {
         Tape::new(string.chars().map(Box::new))
     }
