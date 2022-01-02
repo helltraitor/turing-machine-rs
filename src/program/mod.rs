@@ -63,6 +63,7 @@ impl<S: Symbol> Program<S> {
     ///     // let _ = Program::new(vec!['0'], 0);
     /// }
     /// ```
+    #[rustfmt::skip]
     pub fn new(alphabet: Vec<S>, l_state: u32) -> Self {
         assert!(!alphabet.is_empty(), "new error: alphabet cannot be empty");
         assert!(
@@ -72,11 +73,7 @@ impl<S: Symbol> Program<S> {
 
         let capacity = alphabet.len() * (l_state as usize);
         let container = Vec::with_capacity(capacity);
-        Program {
-            alphabet,
-            container,
-            l_state,
-        }
+        Program { alphabet, container, l_state }
     }
 
     /// Returns a alphabet reference. Zero cost.
