@@ -1,4 +1,4 @@
-//! Instructions implementation for Turing Machine RS
+//! Provides [`Instruction`] and it's components: [`Head`], [`Tail`] and [`Direction`].
 //!
 //! This module provides unit struct named [`Instruction`] for implementing
 //! this type for any types which implements [`Symbol`] trait.

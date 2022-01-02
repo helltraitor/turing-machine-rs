@@ -1,4 +1,5 @@
-//! State implementation for Turing Machine RS
+//! Provides [`Configuration`] and [`Tape`] realization which represents
+//! Turing machine state.
 //!
 //! This module provides [`Tape`] and [`Configuration`] which are using
 //! by Turing machines and can be used with any types which implements

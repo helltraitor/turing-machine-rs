@@ -1,4 +1,4 @@
-//! Program implementation for Turing Machine RS
+//! Provides [`Program`] realization for Turing machine.
 //!
 //! This module provides [`Program`] which is using for initialization
 //! a [`crate::TuringMachine`] and [`ExtendBy`] trait for [`Program`] which
