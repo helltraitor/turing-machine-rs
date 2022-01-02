@@ -1,6 +1,6 @@
 [package]
 name = "turing-machine-rs"
-version = "0.1.0"
+version = "0.1.0-alpha"
 edition = "2021"
 rust-version = "1.56"
 authors = ["Helltraitor <helltraitor@hotmail.com>"]
