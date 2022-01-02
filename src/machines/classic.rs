@@ -5,6 +5,8 @@ use crate::program::Program;
 use crate::state::Configuration;
 use crate::{Symbol, TuringMachine, With};
 
+/// [`Classic`] is an example of [`TuringMachine`] which can be freely used
+/// for program execution.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Classic<S: Symbol> {
     default: S,
@@ -12,6 +14,11 @@ pub struct Classic<S: Symbol> {
 }
 
 impl<S: Symbol> Classic<S> {
+    /// Constructs a new [`Classic<Symbol>`] Turing machine from program
+    /// [`Program`] and default symbol [`Symbol`].
+    ///
+    /// # Panics
+    /// Panics when default symbol is not in alphabet.
     pub fn new(program: Program<S>, default: S) -> Self {
         assert!(
             program.alphabet().contains(&default),
@@ -24,6 +31,11 @@ impl<S: Symbol> Classic<S> {
 }
 
 impl<S: Symbol> TuringMachine<S> for Classic<S> {
+    /// Executes [`Configuration`] once by mutation.
+    ///
+    /// # Panics
+    /// Panics when program doesn't contains [`crate::instruction::Instruction`]
+    /// with [`Head`] for this index and symbol.
     fn execute_once(&self, mut conf: Configuration<S>) -> Configuration<S> {
         let head = Head::new(conf.state, conf.get_symbol().clone());
         let inst = self.program.get(&head).unwrap_or_else(|| {
@@ -37,7 +49,11 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
         conf.shift(inst.tail.direction, self.default.clone());
         conf
     }
-
+    /// Executes [`Configuration`] until predicate is `false` by mutation.
+    ///
+    /// # Panics
+    /// Panics when program doesn't contains [`crate::instruction::Instruction`]
+    /// with [`Head`] for this index and symbol.
     fn execute_until(
         &self,
         mut conf: Configuration<S>,
@@ -62,6 +78,9 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
 impl<S: Symbol> With<Classic<S>> for Classic<S> {
     type Output = Option<Classic<S>>;
 
+    /// Makes superposition with two or more [`Classic`] machines by chain.
+    /// This method accept only [`Classic`] struct and can be used only for
+    /// another [`Classic`] machine.
     fn with(&self, other: &Classic<S>) -> Self::Output {
         if self.program.alphabet() != other.program.alphabet() {
             return None;
@@ -79,6 +98,9 @@ impl<S: Symbol> With<Classic<S>> for Classic<S> {
 impl<S: Symbol> With<Classic<S>> for Option<Classic<S>> {
     type Output = Option<Classic<S>>;
 
+    /// Makes superposition with two or more [`Classic`] machines by chain.
+    /// This method accept only [`Classic`] struct and can be used only for
+    /// [`Option<Classic>`] machine.
     fn with(&self, other: &Classic<S>) -> Self::Output {
         match self {
             Some(machine) => machine.with(other),
