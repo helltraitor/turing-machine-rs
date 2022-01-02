@@ -1,10 +1,10 @@
 # Turing Machine RS
 
-A library for implementing any turing machines with minimal limitations for Rust programming language. It is:
+A library for implementing any Turing machine with minimal limitations for the Rust programming language. It is:
 
-* **Low-cost**: Turing Machine RS designed to simulate execution that's why it cannot be simple, flexible and zero-cost in the same time.
+* **Low-cost**: Turing Machine RS designed to simulate execution. That's why it cannot be simple, flexible and zero-cost at the same time.
 
-* **Flexible**: Turing Machine RS works with not the specific types nor even copy-only types! Instead of the library supports any struct or object with implements `Clone + Debug + Display + Eq + PartialEq` trait.
+* **Flexible**: Turing Machine RS works with not the specific types nor even copy-only types! Instead, the library supports any struct or object that implements `Clone + Debug + Display + Eq + PartialEq` trait.
 
 [![Crates.io][crates-badge]][crates-url]
 [![MIT licensed][mit-badge]][mit-url]
@@ -27,11 +27,11 @@ A library for implementing any turing machines with minimal limitations for Rust
 
 ## Overview
 
-Turing Machine RS provides realization for classic turing machine named "Classic" (minimal version for simulation) and debugger for turing machines "Debugger" which works with any machines implemented Turing Machine Trait.
+Turing Machine RS includes a "Classic" realization for Turing Machine (a minimal version for simulation) and a "Debugger" Turing machine that works with any type that implements the Turing Machine Trait.
 
 ## Example
 
-This is a simple example for a Turing Machine which replace nice by test and test by nice chars.
+This is a simple example of a Turing Machine that replaces nice by test and test by nice chars.
 
 ```rust
 extern crate turing_machine_rs;
@@ -70,13 +70,13 @@ fn main() {
 }
 ```
 
-But this library is not for only simplest types: you can even use other turing machines as symbols! More examples can be found [here][examples].
+But this library is not just for the simplest types: you can even use other Turing machines as symbols! More examples can be found [here][examples].
 
 To see a list of the available features flags that can be enabled, check [docs][feature-flag-docs].
 
 ## Getting Help
 
-First, read [examples][examples] or [api][api-documentation]. If examples can't provides answers for you then you can try to read docs and after all of it you can contact with me: <helltraitor@hotmail.com>
+First, read [examples][examples] or [api][api-documentation]. If examples can't provide answers for you, then you can try to read docs, and after all of that, you can contact me: <helltraitor@hotmail.com>
 
 ### Major links:
 * [Examples][examples]
@@ -87,12 +87,12 @@ First, read [examples][examples] or [api][api-documentation]. If examples can't 
 
 ## Contributing
 
-If you want to improve this crate, just open an issue and describe the problem (shortly if you can), further possible problems or reasons to improve (widely if needs), how to solve this problems and docs for this or similar cases (optional).
+If you want to improve this crate, just open an issue and describe the problem (shortly if you can), further possible problems or reasons to improve (widely if needed), how to solve this problem, and docs for this or similar cases (optional).
 [See example.](FILL_ME)
 
 ## Supported Rust Versions
 
-Turing Machine RS was created in lastest stable version (2021, 1.57) but this library also support 1.56.0 (at least) and above.
+Turing Machine RS was created in the latest stable version (2021, 1.57) but this library also supports 1.56 (at least) and above.
 
 ## License
 
