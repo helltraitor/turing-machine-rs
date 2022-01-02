@@ -12,10 +12,10 @@ A library for implementing any turing machines with minimal limitations for Rust
 [![Rust Stable][actions-stable-badge]][actions-stable-url]
 [![Rust Nightly][actions-nightly-badge]][actions-nightly-url]
 
-[crates-badge]: https://img.shields.io/FILL_SHIELDS_BADGE
-[crates-url]: https://crates.io/crates/FILL_CRATES_URL
+[crates-badge]: https://img.shields.io/crates/v/turing-machine-rs
+[crates-url]: https://crates.io/crates/turing-machine-rs
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[mit-url]: https://github.com/FILL_LICENSE_PATH
+[mit-url]: https://github.com/Helltraitor/turing-machine-rs/blob/main/LICENSE
 [actions-2021-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_2021.yml/badge.svg
 [actions-2021-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_2021.yml
 [actions-stable-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
@@ -23,7 +23,7 @@ A library for implementing any turing machines with minimal limitations for Rust
 [actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
 [actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
 
-[API Docs](https://docs.rs/FILL_ME)
+[API Docs](https://docs.rs/turing-machine-rs)
 
 ## Overview
 
@@ -76,17 +76,14 @@ To see a list of the available features flags that can be enabled, check [docs][
 
 ## Getting Help
 
-First, read [examples][examples] or [api][api-documentation]. If tutorial can't provides answers for you then you can try to read docs and after all of it you can contact with me: <helltraitor@hotmail.com>
+First, read [examples][examples] or [api][api-documentation]. If examples can't provides answers for you then you can try to read docs and after all of it you can contact with me: <helltraitor@hotmail.com>
 
 ### Major links:
 * [Examples][examples]
 * [API documentation][api-documentation]
-* [Feature flag doc][feature-flag-docs]
 
-[tutorial]: FILL_ME
 [examples]: https://github.com/Helltraitor/turing-machine-rs/tree/main/examples
-[api-documentation]: https://docs.rs/FILL_ME
-[feature-flag-docs]: https://docs.rs/FILL_ME
+[api-documentation]: https://docs.rs/turing-machine-rs
 
 ## Contributing
 
