@@ -21,6 +21,8 @@ keywords = [
     "simulation",
     "turing-machine",
 ]
+exclude = [".github/*", ".gitignore"]
+
 
 [features]
 default = []
