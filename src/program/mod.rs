@@ -8,9 +8,10 @@
 //! [`Program`] can panic!
 
 use std::fmt::{Display, Error, Formatter};
+use std::mem::replace;
 
 use crate::instruction::{Direction, Head, Instruction, Tail};
-use crate::Symbol;
+use crate::{Symbol, With};
 
 /// Program is a vector-based struct which is implementing minimal api
 /// for changing and extending and no api for removinf and shrink. The Program
@@ -29,17 +30,8 @@ pub struct Program<S: Symbol> {
 impl<S: Symbol> Program<S> {
     /// Constructs a new [`Program`] from vector [`Vec<S>`] and last state
     /// [`u32`].
-    ///
-    /// # Panics
-    /// Panics when `alphabet.is_empty` or l_state equals to `0`.
     #[rustfmt::skip]
     pub fn new(alphabet: Vec<S>, l_state: u32) -> Self {
-        assert!(!alphabet.is_empty(), "new error: alphabet cannot be empty");
-        assert!(
-            l_state > 0,
-            "new error: l_state must have (be) 1 state at least (start)"
-        );
-
         let capacity = alphabet.len() * (l_state as usize);
         let container = Vec::with_capacity(capacity);
         Program { alphabet, container, l_state }
@@ -50,7 +42,80 @@ impl<S: Symbol> Program<S> {
         &self.alphabet
     }
 
-    /// Extends this program by another according to these rules:
+    /// Returns [`Some(Instruction)`] for [`Head`] if it exitsts in the program
+    /// otherwise [`None`].
+    pub fn get(&self, head: &Head<S>) -> Result<Option<&Instruction<S>>, String> {
+        if self.l_state < head.state {
+            return Err(format!(
+                "get error: required state {} is large then largest {}",
+                head.state, self.l_state
+            ));
+        }
+        Ok(self
+            .container
+            .iter()
+            .find(|inst: &&Instruction<S>| &inst.head == head))
+    }
+
+    /// Returns the program last state.
+    pub fn l_state(&self) -> u32 {
+        self.l_state
+    }
+
+    #[rustfmt::skip]
+    /// Setting [`Instruction`] to the program.
+    ///
+    /// Returns [`Err(String)`] if [`Head`] state equals to `0`, [`Head`]
+    /// or [`Tail`] symbols are not in [`Program`] alphabet or [`Program`]
+    /// last state is less then [`Head`] or [`Tail`] states. Otherwise returns
+    /// [`Ok(Some(Instruction))`] if the instruction with this [`Head`] already
+    /// exitsts or [`Ok(None)`] if the instruction is new for this [`Program`].
+    ///
+    /// The [`Option`] is very useful in the collision check.
+    pub fn insert(&mut self, inst: Instruction<S>) -> Result<Option<Instruction<S>>, String> {
+        if inst.head.state == 0 {
+            return Err(format!(
+                "set error: instruction {} cannot have 0 state in head",
+                inst
+            ));
+        }
+        if !self.alphabet.contains(&inst.head.symbol)
+            || !self.alphabet.contains(&inst.tail.symbol) {
+            return Err(format!(
+                "set error: instruction {} not for program with alphabet {:?}",
+                inst, &self.alphabet
+            ));
+        }
+        if self.l_state < inst.head.state || self.l_state < inst.tail.state {
+            return Err(format!(
+                "set error: instruction {} have states which is large then program largest state {}",
+                inst, self.l_state
+            ));
+        }
+        let position = self
+            .container
+            .iter()
+            .position(|cand: &Instruction<S>| cand.head == inst.head);
+        match position {
+            Some(index) => Ok(Some(replace(&mut self.container[index], inst))),
+            None => {
+                self.container.push(inst);
+                Ok(None)
+            }
+        }
+    }
+}
+
+/// Helper trait which allows to implement extend_by method.
+pub trait ExtendBy<I: ?Sized> {
+    /// Extends the program with some object depends to realization.
+    fn extend_by(&mut self, iterable: I);
+}
+
+impl<S: Symbol> With<Program<S>> for Program<S> {
+    type Output = Result<Program<S>, String>;
+
+    /// Merges this program by another according to these rules:
     /// 1. All [`Tail`] parts of instructions of this struct will changes their
     ///     to `self.l_state` if tail state equals to `0`
     /// 2. All [`Head`] parts of instructions of another struct will increase
@@ -59,102 +124,38 @@ impl<S: Symbol> Program<S> {
     ///     increase by `self.l_state` but only if tail state not equals to `0`
     /// 4. This struct l_state increase by other l_state (really thats happend
     ///     before setting new instructions)
-    /// # Panics
-    /// Panics when alphabets are different or when this struct can store such
-    /// many instructions. The last is depend to l_state count.
-    ///
-    /// # MUST NOT BE USED
-    pub fn extend(&mut self, other: &Program<S>) {
-        assert!(
-            self.alphabet == other.alphabet,
-            "extend error: alphabet {:?} and {:?} must be equal",
-            &self.alphabet,
-            &other.alphabet
-        );
-        assert!(
-            self.container.len() + other.container.len() > self.container.capacity(),
-            "extend error: program type has limited size (count of alphabet * (count of states - 1))"
-        );
-        let old_l_state = self.l_state;
-        self.l_state += other.l_state;
-
-        for inst in self.container.iter_mut() {
-            if inst.tail.state == 0 {
-                inst.tail.state = old_l_state + 1;
-            }
+    fn with(&self, other: &Program<S>) -> Result<Program<S>, String> {
+        if self.alphabet != other.alphabet {
+            return Err(format!(
+                "extend error: alphabet {:?} and {:?} must be equal",
+                &self.alphabet, &other.alphabet
+            ));
         }
+        let mut program = Program::new(self.alphabet.clone(), self.l_state + other.l_state);
+        // `self` and `other` are `Program` instances so it doesn't need to use insert method.
+        let extension = self.container.iter().map(|inst| match inst.tail.state {
+            0 => {
+                let mut inst = inst.clone();
+                inst.tail.state = self.l_state + 1;
+                inst
+            }
+            _ => inst.clone(),
+        });
+        program.container.extend(extension);
 
-        for inst in other.container.iter() {
+        let extension = other.container.iter().map(|inst| {
             let mut inst = inst.clone();
-            inst.head.state += old_l_state;
+            inst.head.state += self.l_state;
             inst.tail.state += match inst.tail.state {
                 0 => 0,
-                _ => old_l_state,
+                _ => self.l_state,
             };
-            self.set(inst);
-        }
-    }
-
-    /// Returns [`Some(Instruction)`] for [`Head`] if it exitsts in the program
-    /// otherwise [`None`].
-    ///
-    /// # Panics
-    /// Panics when head l_state is large then self l_state.
-    pub fn get(&self, head: &Head<S>) -> Option<&Instruction<S>> {
-        assert!(
-            self.l_state >= head.state,
-            "get error: required state {} is large then largest {}",
-            head.state,
-            self.l_state
-        );
-        self.container
-            .iter()
-            .find(|inst: &&Instruction<S>| &inst.head == head)
-    }
-
-    /// Returns the program last state.
-    pub fn l_state(&self) -> u32 {
-        self.l_state
-    }
-
-    /// Setting [`Instruction`] to the program.
-    ///
-    /// # Panics
-    /// Panics when head state equals to zero, head or tail symbol
-    /// is not in the alphabet or `self.l_state` is less the head or tail state.
-    pub fn set(&mut self, inst: Instruction<S>) {
-        assert!(
-            inst.head.state != 0,
-            "set error: instruction {} cannot have 0 state in head",
             inst
-        );
-        assert!(
-            self.alphabet.contains(&inst.head.symbol) && self.alphabet.contains(&inst.tail.symbol),
-            "set error: instruction {} not for program with alphabet {:?}",
-            inst,
-            &self.alphabet
-        );
-        assert!(
-            self.l_state >= inst.head.state && self.l_state >= inst.tail.state,
-            "set error: instruction {} have states which is large then program largest state {}",
-            inst,
-            self.l_state
-        );
-        let position = self
-            .container
-            .iter()
-            .position(|cand: &Instruction<S>| cand.head == inst.head);
-        match position {
-            Some(index) => self.container[index] = inst,
-            None => self.container.push(inst),
-        };
-    }
-}
+        });
+        program.container.extend(extension);
 
-/// Helper trait which allows to implement extend_by method.
-pub trait ExtendBy<I: ?Sized> {
-    /// Extends the program with some object depends to realization.
-    fn extend_by(&mut self, iterable: I);
+        Ok(program)
+    }
 }
 
 impl<S: Symbol, I> ExtendBy<I> for Program<S>
@@ -165,7 +166,7 @@ where
     /// elements are going to [`Head`] and the last three are going to [`Tail`]
     fn extend_by(&mut self, iterable: I) {
         for (h_state, h_symbol, t_state, t_symbol, t_direction) in iterable {
-            self.set(Instruction::new(
+            let _ = self.insert(Instruction::new(
                 Head::new(h_state, h_symbol),
                 Tail::new(t_state, t_symbol, t_direction),
             ));

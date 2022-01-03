@@ -39,7 +39,7 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
     /// with [`Head`] for this index and symbol.
     fn execute_once(&self, mut conf: Configuration<S>) -> Configuration<S> {
         let head = Head::new(conf.state, conf.get_symbol().clone());
-        let inst = self.program.get(&head).unwrap_or_else(|| {
+        let inst = self.program.get(&head).unwrap().unwrap_or_else(|| {
             panic!(
                 "uncovered case: have no tail for head ({}) in program",
                 head
@@ -62,12 +62,13 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
     ) -> Configuration<S> {
         while !until(&conf) {
             let head = Head::new(conf.state, conf.get_symbol().clone());
-            let inst = self.program.get(&head).unwrap_or_else(|| {
-                panic!(
+            let inst = self.program.get(&head).unwrap().expect(
+                format!(
                     "uncovered case: have no tail for head ({}) in program",
                     head
                 )
-            });
+                .as_str(),
+            );
             conf.state = inst.tail.state;
             conf.set_symbol(inst.tail.symbol.clone());
             conf.shift(inst.tail.direction, self.default.clone());
@@ -100,10 +101,10 @@ impl<S: Symbol> With<Classic<S>> for Classic<S> {
                 self.default, other.default,
             ));
         }
-        let mut program = self.program.clone();
-        program.extend(&other.program);
-
-        Classic::new(program, self.default.clone())
+        match self.program.with(&other.program) {
+            Ok(program) => Classic::new(program, self.default.clone()),
+            Err(msg) => Err(msg),
+        }
     }
 }
 

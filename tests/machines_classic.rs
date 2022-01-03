@@ -101,7 +101,7 @@ mod copy_turing_machine {
     #[test]
     fn success_execute_once() {
         let mut program = Program::new(vec![' ', '1'], 1);
-        program.set(Instruction::new(
+        let _ = program.insert(Instruction::new(
             Head::new(1, '1'),
             Tail::new(1, '1', Direction::Right),
         ));
@@ -120,7 +120,7 @@ mod copy_turing_machine {
     #[should_panic]
     fn fail_execute_once() {
         let mut program = Program::new(vec![' ', '1'], 1);
-        program.set(Instruction::new(
+        let _ = program.insert(Instruction::new(
             Head::new(1, '1'),
             Tail::new(1, '1', Direction::Right),
         ));
@@ -235,7 +235,7 @@ mod clone_turing_machine {
     #[test]
     fn success_execute_once() {
         let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
-        program.set(Instruction::new(
+        let _ = program.insert(Instruction::new(
             Head::new(1, Box::new('1')),
             Tail::new(1, Box::new('1'), Direction::Right),
         ));
@@ -254,7 +254,7 @@ mod clone_turing_machine {
     #[should_panic]
     fn fail_execute_once() {
         let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
-        program.set(Instruction::new(
+        let _ = program.insert(Instruction::new(
             Head::new(1, Box::new('1')),
             Tail::new(1, Box::new('1'), Direction::Right),
         ));
