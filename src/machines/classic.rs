@@ -1,4 +1,4 @@
-use std::fmt::{Display, Error, Formatter};
+use std::fmt;
 
 use crate::instruction::Head;
 use crate::program::Program;
@@ -17,16 +17,17 @@ impl<S: Symbol> Classic<S> {
     /// Constructs a new [`Classic<Symbol>`] Turing machine from program
     /// [`Program`] and default symbol [`Symbol`].
     ///
-    /// # Panics
-    /// Panics when default symbol is not in alphabet.
-    pub fn new(program: Program<S>, default: S) -> Self {
-        assert!(
-            program.alphabet().contains(&default),
-            "new error: default symbol {} not in alphabet {:?}",
-            default,
-            program.alphabet()
-        );
-        Classic { program, default }
+    /// Returns [`Ok(Classic<Symbol>)`] when default symbol is in program
+    /// alphabet otherwise [`Err(String)`] with diagnostic information.
+    pub fn new(program: Program<S>, default: S) -> Result<Self, String> {
+        match program.alphabet().contains(&default) {
+            true => Ok(Classic { program, default }),
+            false => Err(format!(
+                "new error: default symbol {} is not in alphabet {:?}",
+                default,
+                program.alphabet()
+            )),
+        }
     }
 }
 
@@ -76,41 +77,57 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
 }
 
 impl<S: Symbol> With<Classic<S>> for Classic<S> {
-    type Output = Option<Classic<S>>;
+    type Output = Result<Classic<S>, String>;
 
     /// Makes superposition with two or more [`Classic`] machines by chain.
     /// This method accept only [`Classic`] struct and can be used only for
     /// another [`Classic`] machine.
+    ///
+    /// Returns a new [`Ok(Classic)`] on success and [`Err(String)`]
+    /// with diagnostic information when machines have different alphabets
+    /// or default symbols.
     fn with(&self, other: &Classic<S>) -> Self::Output {
         if self.program.alphabet() != other.program.alphabet() {
-            return None;
+            return Err(format!(
+                "with error: classic machines have different alphabets: {:?} and {:?}",
+                self.program.alphabet(),
+                other.program.alphabet()
+            ));
         }
         if self.default != other.default {
-            return None;
+            return Err(format!(
+                "with error: classic machines have different default symbols: {} and {}",
+                self.default, other.default,
+            ));
         }
         let mut program = self.program.clone();
         program.extend(&other.program);
 
-        Some(Classic::new(program, self.default.clone()))
+        Classic::new(program, self.default.clone())
     }
 }
 
-impl<S: Symbol> With<Classic<S>> for Option<Classic<S>> {
-    type Output = Option<Classic<S>>;
+impl<S: Symbol> With<Classic<S>> for Result<Classic<S>, String> {
+    type Output = Result<Classic<S>, String>;
 
     /// Makes superposition with two or more [`Classic`] machines by chain.
     /// This method accept only [`Classic`] struct and can be used only for
-    /// [`Option<Classic>`] machine.
+    /// [`Result<Classic, &'static str>`] machine.
+    ///
+    /// Returns a new [`Ok(Classic)`] when `self` is [`Result::Ok`] on success
+    /// and [`Err(String)`] when `self` is [`Result::Ok`] but machines have
+    /// different alphabets or default symbols. Returns a copy of [`Err(String)`]
+    /// when `self` is [`Result::Err`]
     fn with(&self, other: &Classic<S>) -> Self::Output {
         match self {
-            Some(machine) => machine.with(other),
-            None => None,
+            Ok(machine) => machine.with(other),
+            Err(msg) => Err(msg.clone()),
         }
     }
 }
 
-impl<S: Symbol> Display for Classic<S> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl<S: Symbol> fmt::Display for Classic<S> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         use std::any::type_name;
 
         write!(

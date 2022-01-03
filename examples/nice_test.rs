@@ -19,7 +19,7 @@ fn main() {
         (3, 'c', 4, 's', Direction::Right),
         (4, 'e', 0, 't', Direction::Center),
     ]);
-    let machine = Classic::new(program, '_');
+    let machine = Classic::new(program, '_').unwrap();
 
     let test = Tape::from("test");
     let nice = machine.translate_nrm(test.clone());

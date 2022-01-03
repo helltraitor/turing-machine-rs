@@ -54,7 +54,7 @@ fn main() {
         // 8, '1' - Imp
         (8, '+', 0, ' ', Direction::Right),
     ]);
-    let machine = Classic::new(program, ' ');
+    let machine = Classic::new(program, ' ').unwrap();
 
     // Change and try to run this example!
     let lhs = "10101";

@@ -53,7 +53,7 @@ fn main() {
         (9, stand.clone(), 0, l_shift.clone(), Direction::Center),
     ]);
 
-    let hyper_machine = Classic::new(program, stand.clone());
+    let hyper_machine = Classic::new(program, stand.clone()).unwrap();
     let choose_second = Tape::new(vec![
         r_shift.clone(),
         trans.clone(),
@@ -99,7 +99,7 @@ mod nrm_machines {
             (1, '0', 0, '0', Direction::Center),
             (1, '1', 0, '1', Direction::Center),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     pub fn new_zerofy_machine() -> Classic<char> {
@@ -112,7 +112,7 @@ mod nrm_machines {
             (3, '1', 4, '0', Direction::Center),
             (4, '0', 3, '0', Direction::Left),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     pub fn new_left_shift_machine() -> Classic<char> {
@@ -122,7 +122,7 @@ mod nrm_machines {
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Left),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     pub fn new_right_shift_machine() -> Classic<char> {
@@ -132,7 +132,7 @@ mod nrm_machines {
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     pub fn new_trans_machine() -> Classic<char> {
@@ -168,6 +168,6 @@ mod nrm_machines {
             (18, '1', 18, '1', Direction::Right),
             (19, '1', 0, '0', Direction::Center),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 }

@@ -73,7 +73,7 @@ impl<T> Symbol for T where T: Clone + Debug + Display + Eq + PartialEq {}
 ///         (3, 'c', 4, 's', Direction::Right),
 ///         (4, 'e', 0, 't', Direction::Center),
 ///     ]);
-///     let machine = Classic::new(program, '_');///
+///     let machine = Classic::new(program, '_').unwrap();
 ///
 ///     let test = Tape::from("test");
 ///     let nice = machine.translate_nrm(test.clone());
@@ -120,7 +120,7 @@ pub trait TuringMachine<S: Symbol> {
     ///         (3, '0', 0, '0', Direction::Center),
     ///         (3, '1', 3, '0', Direction::Left),
     ///     ]);
-    ///     let machine = Classic::new(program, '0');
+    ///     let machine = Classic::new(program, '0').unwrap();
     ///
     ///     let conf = Configuration::new_std(Tape::from("010"));
     ///     let result = machine.execute_until(conf, |conf| conf.state == 3);

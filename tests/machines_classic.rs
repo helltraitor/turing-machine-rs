@@ -11,14 +11,14 @@ mod copy {
     #[test]
     fn success_creation() {
         let program = Program::new(vec![' '], 1);
-        let _ = Classic::new(program, ' ');
+        let _ = Classic::new(program, ' ').unwrap();
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
         let program = Program::new(vec![' '], 1);
-        let _ = Classic::new(program, '_');
+        let _ = Classic::new(program, '_').unwrap();
     }
 }
 
@@ -29,14 +29,14 @@ mod clone {
     #[test]
     fn success_creation() {
         let program = Program::new(vec![Box::new(' ')], 1);
-        let _ = Classic::new(program, Box::new(' '));
+        let _ = Classic::new(program, Box::new(' ')).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
         let program = Program::new(vec![Box::new(' ')], 1);
-        let _ = Classic::new(program, Box::new('_'));
+        let _ = Classic::new(program, Box::new('_')).unwrap();
     }
 }
 
@@ -53,7 +53,7 @@ mod copy_turing_machine {
             (3, '1', 3, '0', Direction::Left),
         ]);
 
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     fn new_success_machine() -> Classic<char> {
@@ -67,7 +67,7 @@ mod copy_turing_machine {
             (3, '1', 3, '0', Direction::Left),
         ]);
 
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     #[test]
@@ -81,7 +81,7 @@ mod copy_turing_machine {
             (2, '0', 2, '0', Direction::Right),
             (2, '1', 2, '1', Direction::Right),
         ]);
-        let machine = Classic::new(program, ' ');
+        let machine = Classic::new(program, ' ').unwrap();
 
         let conf = Configuration::new(Tape::from("001100"), 5, 0);
         let result = machine.execute(conf.clone());
@@ -106,7 +106,7 @@ mod copy_turing_machine {
             Tail::new(1, '1', Direction::Right),
         ));
 
-        let machine = Classic::new(program, ' ');
+        let machine = Classic::new(program, ' ').unwrap();
 
         let conf = Configuration::new_std(Tape::from("1"));
         let result = machine.execute_once(conf);
@@ -125,7 +125,7 @@ mod copy_turing_machine {
             Tail::new(1, '1', Direction::Right),
         ));
 
-        let machine = Classic::new(program, ' ');
+        let machine = Classic::new(program, ' ').unwrap();
 
         let conf = Configuration::new_std(Tape::from(" "));
         let _ = machine.execute_once(conf);
@@ -184,7 +184,7 @@ mod clone_turing_machine {
             (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
         ]);
 
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_success_machine() -> Classic<Box<char>> {
@@ -198,7 +198,7 @@ mod clone_turing_machine {
             (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
         ]);
 
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     #[test]
@@ -212,7 +212,7 @@ mod clone_turing_machine {
             (2, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
         ]);
-        let machine = Classic::new(program, Box::new(' '));
+        let machine = Classic::new(program, Box::new(' ')).unwrap();
 
         let conf = Configuration::new(Tape::from("001100"), 5, 0);
         let result = machine.execute(conf.clone());
@@ -237,7 +237,7 @@ mod clone_turing_machine {
             Tail::new(1, Box::new('1'), Direction::Right),
         ));
 
-        let machine = Classic::new(program, Box::new(' '));
+        let machine = Classic::new(program, Box::new(' ')).unwrap();
 
         let conf = Configuration::new_std(Tape::from("1"));
         let result = machine.execute_once(conf);
@@ -256,7 +256,7 @@ mod clone_turing_machine {
             Tail::new(1, Box::new('1'), Direction::Right),
         ));
 
-        let machine = Classic::new(program, Box::new(' '));
+        let machine = Classic::new(program, Box::new(' ')).unwrap();
 
         let conf = Configuration::new_std(Tape::from(" "));
         let _ = machine.execute_once(conf);
@@ -316,7 +316,7 @@ mod copy_with_for_classic {
             (3, '1', 4, '0', Direction::Center),
             (4, '0', 3, '0', Direction::Left),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     fn new_left_shift_machine() -> Classic<char> {
@@ -326,7 +326,7 @@ mod copy_with_for_classic {
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Left),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     fn new_right_shift_machine() -> Classic<char> {
@@ -336,7 +336,7 @@ mod copy_with_for_classic {
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     fn new_trans_machine() -> Classic<char> {
@@ -372,7 +372,7 @@ mod copy_with_for_classic {
             (18, '1', 18, '1', Direction::Right),
             (19, '1', 0, '0', Direction::Center),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     #[test]
@@ -382,57 +382,16 @@ mod copy_with_for_classic {
         let right_shift = new_right_shift_machine();
         let trans = new_trans_machine();
 
-        // choose the second from three
-        let choose_machine = right_shift.with(&trans);
-
         // This test checks only object with object
         // Thats why it needs to unpack value and try again
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from Right_shift (first) and trans"
-            ),
-        };
 
-        let choose_machine = choose_machine.with(&right_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and Right_shift (second)"
-            )
-        };
-
-        let choose_machine = choose_machine.with(&zerofy);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and zerofy (first)"
-            ),
-        };
-
-        let choose_machine = choose_machine.with(&left_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and left_shift (first)"
-            )
-        };
-
-        let choose_machine = choose_machine.with(&zerofy);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and zerofy (second)"
-            ),
-        };
-
-        let choose_machine = choose_machine.with(&left_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and left_shift (second)"
-            )
-        };
+        // choose the second from three
+        let choose_machine = right_shift.with(&trans).unwrap();
+        let choose_machine = choose_machine.with(&right_shift).unwrap();
+        let choose_machine = choose_machine.with(&zerofy).unwrap();
+        let choose_machine = choose_machine.with(&left_shift).unwrap();
+        let choose_machine = choose_machine.with(&zerofy).unwrap();
+        let choose_machine = choose_machine.with(&left_shift).unwrap();
 
         let tape = Tape::from("0101101110");
         let result = choose_machine.translate_nrm(tape);
@@ -449,16 +408,12 @@ mod copy_with_for_classic {
     }
 
     #[test]
+    #[should_panic]
     fn self_with_other_fail() {
-        let zero_one = Classic::new(Program::new(vec!['0', '1'], 2), '0');
-        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0');
+        let zero_one = Classic::new(Program::new(vec!['0', '1'], 2), '0').unwrap();
+        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0').unwrap();
 
-        match zero_one.with(&zero_one_two) {
-            Some(_) => panic!(
-                "superpostion error: got a machine from two machines with different alphabets"
-            ),
-            None => (),
-        };
+        zero_one.with(&zero_one_two).unwrap();
     }
 
     #[test]
@@ -476,12 +431,7 @@ mod copy_with_for_classic {
             .with(&zerofy)
             .with(&left_shift);
 
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => {
-                panic!("superpostion error: cannot create machine from several chained machines")
-            }
-        };
+        let choose_machine = choose_machine.unwrap();
 
         let tape = Tape::from("0101101110");
         let result = choose_machine.translate_nrm(tape);
@@ -499,16 +449,12 @@ mod copy_with_for_classic {
     }
 
     #[test]
+    #[should_panic]
     fn option_with_other_fail() {
-        let zero_one = Some(Classic::new(Program::new(vec!['0', '1'], 2), '0'));
-        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0');
+        let zero_one = Classic::new(Program::new(vec!['0', '1'], 2), '0');
+        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0').unwrap();
 
-        match zero_one.with(&zero_one_two) {
-            Some(_) => panic!(
-                "superpostion error: got a machine from two machines with different alphabets"
-            ),
-            None => (),
-        }
+        zero_one.with(&zero_one_two).unwrap();
     }
 }
 
@@ -526,7 +472,7 @@ mod clone_with_for_classic {
             (3, Box::new('1'), 4, Box::new('0'), Direction::Center),
             (4, Box::new('0'), 3, Box::new('0'), Direction::Left),
         ]);
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_left_shift_machine() -> Classic<Box<char>> {
@@ -536,7 +482,7 @@ mod clone_with_for_classic {
             (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Left),
         ]);
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_right_shift_machine() -> Classic<Box<char>> {
@@ -546,7 +492,7 @@ mod clone_with_for_classic {
             (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
         ]);
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_trans_machine() -> Classic<Box<char>> {
@@ -582,7 +528,7 @@ mod clone_with_for_classic {
             (18, Box::new('1'), 18, Box::new('1'), Direction::Right),
             (19, Box::new('1'), 0, Box::new('0'), Direction::Center),
         ]);
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     #[test]
@@ -592,57 +538,16 @@ mod clone_with_for_classic {
         let right_shift = new_right_shift_machine();
         let trans = new_trans_machine();
 
-        // choose the second from three
-        let choose_machine = right_shift.with(&trans);
-
         // This test checks only object with object
         // Thats why it needs to unpack value and try again
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from Right_shift (first) and trans"
-            ),
-        };
 
-        let choose_machine = choose_machine.with(&right_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and Right_shift (second)"
-            )
-        };
-
-        let choose_machine = choose_machine.with(&zerofy);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and zerofy (first)"
-            ),
-        };
-
-        let choose_machine = choose_machine.with(&left_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and left_shift (first)"
-            )
-        };
-
-        let choose_machine = choose_machine.with(&zerofy);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and zerofy (second)"
-            ),
-        };
-
-        let choose_machine = choose_machine.with(&left_shift);
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => panic!(
-                "superpostion error: cannot create machine from choose_machine and left_shift (second)"
-            )
-        };
+        // choose the second from three
+        let choose_machine = right_shift.with(&trans).unwrap();
+        let choose_machine = choose_machine.with(&right_shift).unwrap();
+        let choose_machine = choose_machine.with(&zerofy).unwrap();
+        let choose_machine = choose_machine.with(&left_shift).unwrap();
+        let choose_machine = choose_machine.with(&zerofy).unwrap();
+        let choose_machine = choose_machine.with(&left_shift).unwrap();
 
         let tape = Tape::from("0101101110");
         let result = choose_machine.translate_nrm(tape);
@@ -659,22 +564,20 @@ mod clone_with_for_classic {
     }
 
     #[test]
+    #[should_panic]
     fn self_with_other_fail() {
         let zero_one = Classic::new(
             Program::new(vec![Box::new('0'), Box::new('1')], 2),
             Box::new('0'),
-        );
+        )
+        .unwrap();
         let zero_one_two = Classic::new(
             Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], 2),
             Box::new('0'),
-        );
+        )
+        .unwrap();
 
-        match zero_one.with(&zero_one_two) {
-            Some(_) => panic!(
-                "superpostion error: got a machine from two machines with different alphabets"
-            ),
-            None => (),
-        };
+        zero_one.with(&zero_one_two).unwrap();
     }
 
     #[test]
@@ -692,12 +595,7 @@ mod clone_with_for_classic {
             .with(&zerofy)
             .with(&left_shift);
 
-        let choose_machine = match choose_machine {
-            Some(machine) => machine,
-            None => {
-                panic!("superpostion error: cannot create machine from several chained machines")
-            }
-        };
+        let choose_machine = choose_machine.unwrap();
 
         let tape = Tape::from("0101101110");
         let result = choose_machine.translate_nrm(tape);
@@ -715,21 +613,18 @@ mod clone_with_for_classic {
     }
 
     #[test]
+    #[should_panic]
     fn option_with_other_fail() {
-        let zero_one = Some(Classic::new(
+        let zero_one = Classic::new(
             Program::new(vec![Box::new('0'), Box::new('1')], 2),
             Box::new('0'),
-        ));
+        );
         let zero_one_two = Classic::new(
             Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], 2),
             Box::new('0'),
-        );
+        )
+        .unwrap();
 
-        match zero_one.with(&zero_one_two) {
-            Some(_) => panic!(
-                "superpostion error: got a machine from two machines with different alphabets"
-            ),
-            None => (),
-        }
+        zero_one.with(&zero_one_two).unwrap();
     }
 }

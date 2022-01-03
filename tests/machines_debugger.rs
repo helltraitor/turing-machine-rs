@@ -16,7 +16,7 @@ mod copy {
         let mut program = Program::new(vec![' '], 1);
         program.extend_by([(1, ' ', 1, ' ', Direction::Right)]);
 
-        Classic::new(program, ' ')
+        Classic::new(program, ' ').unwrap()
     }
 
     #[test]
@@ -59,7 +59,7 @@ mod clone {
         let mut program = Program::new(vec![Box::new(' ')], 1);
         program.extend_by([(1, Box::new(' '), 1, Box::new(' '), Direction::Right)]);
 
-        Classic::new(program, Box::new(' '))
+        Classic::new(program, Box::new(' ')).unwrap()
     }
 
     #[test]
@@ -108,7 +108,7 @@ mod copy_turing_machine {
             (3, '1', 4, '0', Direction::Center),
             (4, '0', 3, '0', Direction::Left),
         ]);
-        Classic::new(program, '0')
+        Classic::new(program, '0').unwrap()
     }
 
     #[test]
@@ -161,7 +161,7 @@ mod copy_turing_machine {
             (3, '0', 0, '0', Direction::Center),
             (3, '1', 3, '0', Direction::Left),
         ]);
-        let machine = Classic::new(program, '0');
+        let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
 
         let expected = debugger.translate_std(Tape::from("010"));
@@ -180,7 +180,7 @@ mod copy_turing_machine {
             (3, '0', 0, '0', Direction::Center),
             (3, '1', 3, '0', Direction::Left),
         ]);
-        let machine = Classic::new(program, '0');
+        let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
 
         let result = debugger.translate_nrm(Tape::from("010"));
@@ -205,7 +205,7 @@ mod clone_turing_machine {
             (3, Box::new('1'), 4, Box::new('0'), Direction::Center),
             (4, Box::new('0'), 3, Box::new('0'), Direction::Left),
         ]);
-        Classic::new(program, Box::new('0'))
+        Classic::new(program, Box::new('0')).unwrap()
     }
 
     #[test]
@@ -258,7 +258,7 @@ mod clone_turing_machine {
             (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
         ]);
-        let machine = Classic::new(program, Box::new('0'));
+        let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);
 
         let expected = debugger.translate_std(Tape::from("010"));
@@ -277,7 +277,7 @@ mod clone_turing_machine {
             (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
         ]);
-        let machine = Classic::new(program, Box::new('0'));
+        let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);
 
         let result = debugger.translate_nrm(Tape::from("010"));

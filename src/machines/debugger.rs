@@ -27,7 +27,7 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// fn main() {
 ///     let mut program = Program::new(vec![' '], 1);
 ///     program.extend_by([(1, ' ', 1, ' ', Direction::Right)]);
-///     let machine = Classic::new(program, ' ');
+///     let machine = Classic::new(program, ' ').unwrap();
 ///
 ///     let mut debugger = Debugger::new(machine);
 ///     let conf = Configuration::new_nrm(Tape::from("   "));
@@ -95,9 +95,9 @@ where
     /// the debugger without tools).
     ///
     /// # Panics
-    /// [`Debugger`] could panic only if source code is broken - this is a bug.
+    /// [`Debugger`] could panic only if source code is broken - this would be a bug.
     /// All match cases must and are covered.
-    /// So you can open issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
+    /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
     fn execute_once(&self, conf: Configuration<S>) -> Configuration<S> {
         let next = self.machine.execute_once(conf.clone());
         if let Some(ref c_handler) = self.c_handler {
