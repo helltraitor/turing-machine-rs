@@ -84,6 +84,7 @@ First, read [examples][examples] or [api][api-documentation]. If examples can't 
 ## Contributing
 If you want to improve this crate, just open an issue (you can use [example][issue-example] as a template). The issue must contain these headings: `Problem` or `Enhancement`, `Motivation` (reasons to solve the problem or implement the enhancement). It would be very useful to add `Useful sources` for documentation and examples.
 [See example.][issue-example]
+
 [issue-example]: https://github.com/Helltraitor/turing-machine-rs/issues/2
 
 ## Supported Rust Versions
