@@ -77,7 +77,7 @@ fn main() {
     println!("If you're reading this, hyper machine successful transform choose second machine");
 
     let tape = Tape::from("0101101110");
-    let mut conf = Configuration::new_nrm(tape.clone());
+    let mut conf = Configuration::new_nrm(tape.clone()).unwrap();
     for machine in result_choose_third.as_vec() {
         conf = machine.execute(conf);
         conf.state = 1

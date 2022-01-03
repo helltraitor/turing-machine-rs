@@ -30,7 +30,7 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 ///     let machine = Classic::new(program, ' ').unwrap();
 ///
 ///     let mut debugger = Debugger::new(machine);
-///     let conf = Configuration::new_nrm(Tape::from("   "));
+///     let conf = Configuration::new_nrm(Tape::from("   ")).unwrap();
 ///
 ///     let buffer = Rc::new(RefCell::new(String::new()));
 ///
@@ -97,6 +97,7 @@ where
     /// # Panics
     /// [`Debugger`] could panic only if source code is broken - this would be a bug.
     /// All match cases must and are covered.
+    ///
     /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
     fn execute_once(&self, conf: Configuration<S>) -> Configuration<S> {
         let next = self.machine.execute_once(conf.clone());

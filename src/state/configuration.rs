@@ -20,25 +20,26 @@ impl<S: Symbol> Configuration<S> {
     /// Constructs a new [`Configuration`] from tape: [`Tape`],
     /// current index: [`usize`] and current state: [`u32`].
     ///
-    /// # Panics
-    /// Panics when index is out of tape bounds.
-    pub fn new(tape: Tape<S>, index: usize, state: u32) -> Self {
-        assert!(
-            tape.len() > index,
-            "index out of bounds: the len is {} but the index is {}",
-            tape.len(),
-            index
-        );
-        Configuration { tape, index, state }
+    /// Returns a new [`Ok(Configuration)`] if index is in tape bounds,
+    /// otherwise a [`Err(String)`] with diagnostic information.
+    pub fn new(tape: Tape<S>, index: usize, state: u32) -> Result<Self, String> {
+        match tape.len() > index {
+            true => Ok(Configuration { tape, index, state }),
+            false => Err(format!(
+                "index out of bounds: the len is {} but the index is {}",
+                tape.len(),
+                index
+            )),
+        }
     }
 
     /// Constructs a new [`Configuration`] from tape: [`Tape`],
     /// current index: `0` and current state: `1`.
     /// This configuration named `normal` or `nrm`.
     ///
-    /// # Panics
-    /// Panics when tape is empty.
-    pub fn new_nrm(tape: Tape<S>) -> Configuration<S> {
+    /// Returns a new [`Ok(Configuration)`] if the tape is not empty
+    /// otherwise a [`Err(String)`] with diagnostic information.
+    pub fn new_nrm(tape: Tape<S>) -> Result<Self, String> {
         Configuration::new(tape, 0, 1)
     }
 
@@ -46,9 +47,9 @@ impl<S: Symbol> Configuration<S> {
     /// current index: `tape.len() - 1` and current state: `1`.
     /// This configuration named `standart` or `std`.
     ///
-    /// # Panics
-    /// Panics when tape is empty.
-    pub fn new_std(tape: Tape<S>) -> Configuration<S> {
+    /// Returns a new [`Ok(Configuration)`] if the tape is not empty
+    /// otherwise a [`Err(String)`] with diagnostic information.
+    pub fn new_std(tape: Tape<S>) -> Result<Self, String> {
         let last = tape.len() - 1;
         Configuration::new(tape, last, 1)
     }
@@ -72,12 +73,15 @@ impl<S: Symbol> Configuration<S> {
     /// Returns a current symbol reference. This reference is always exists.
     ///
     /// # Panics
-    /// Panics only if [`Configuration`] source code is broken - this is a bug.
-    /// So you can open issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
+    /// [`Configuration`] could panic only if source code is broken - this
+    /// would be a bug. [`Configuration`] controls its inner index so it always
+    /// valid.
+    ///
+    /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
     pub fn get_symbol(&self) -> &S {
         self.tape
             .get(self.index)
-            .expect("Returned value must be not None because of bound checking")
+            .expect("returned value must be not None because of bound checking")
     }
 
     /// Returns a current tape index. This value is always in tape bounds.
@@ -86,7 +90,9 @@ impl<S: Symbol> Configuration<S> {
     }
 
     /// Returns `true` if tape contains symbols otherwise `false`.
+    ///
     /// Note that Turing tape cannot be empty but this method can return `false`
+    /// (because tape type is based on container type).
     pub fn is_empty(&self) -> bool {
         self.tape.is_empty()
     }
@@ -99,8 +105,11 @@ impl<S: Symbol> Configuration<S> {
     /// Sets `element` at `index` position in [`Tape`].
     ///
     /// # Panics
-    /// Panics only if [`Configuration`] source code is broken - this is a bug.
-    /// So you can open issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
+    /// [`Configuration`] could panic only if source code is broken - this
+    /// would be a bug. [`Configuration`] controls its inner index so it always
+    /// valid.
+    ///
+    /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
     pub fn set_symbol(&mut self, symbol: S) {
         self.tape.set(self.index, symbol);
     }

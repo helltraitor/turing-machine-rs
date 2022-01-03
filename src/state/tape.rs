@@ -7,9 +7,7 @@ use crate::Symbol;
 /// This is the [`Vec`] wrapper with similar methods.
 ///
 /// Tape could be created within [`Tape::new`] with IntoIterator
-/// or within [`Tape::from`] but only for [`str`] and [`String`] types.
-/// In the second case, you must be sure that you use type annotation
-/// or use `str-as-copy` \ `string-as-copy` features.
+/// or within [`Tape::from`] as [`Tape<char>`] but only for [`str`] and [`String`] types.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Tape<S: Symbol> {
     tape: Vec<S>,
@@ -28,21 +26,24 @@ impl<S: Symbol> Tape<S> {
         &self.tape
     }
 
-    /// Returns [`Option`] which is [`Option::None`] when index is large
-    /// then last index of the element and [`Option::Some`] when index
-    /// in bounds.
+    /// Returns [`Option::Some`] when index is in [`Tape`] bounds otherwise
+    /// [`Option::None`].
     pub fn get(&self, index: usize) -> Option<&S> {
         self.tape.get(index)
     }
 
     /// Inserts `element` at `index` position. Moves all items to rigth
     /// when `index` is smaller then length of the [`Tape`].
+    ///
+    /// # Panics
+    /// Panics when `index` is large then [`Tape::len`].
     pub fn insert(&mut self, index: usize, element: S) {
         self.tape.insert(index, element);
     }
 
     /// Returns `true` if tape contains symbols otherwise `false`.
     /// Note that Turing tape cannot be empty but this method can return `false`
+    /// (because tape type is based on container type).
     pub fn is_empty(&self) -> bool {
         self.tape.is_empty()
     }
@@ -85,29 +86,5 @@ impl From<String> for Tape<char> {
     /// type annotation [`Tape<char>`] when feature `string-as-copy` is not using.
     fn from(string: String) -> Self {
         Tape::new(string.chars())
-    }
-}
-
-#[cfg(not(feature = "str-as-copy"))]
-impl From<&str> for Tape<Box<char>> {
-    /// Constructs [`Tape<Box<char>>`] from [`str`]. Available when feature
-    /// `str-as-copy` is not using and needs using type annotation
-    /// [`Tape<Box<char>>`]. Most cases of using this 'feature' is in tests
-    /// as proof of concept. There is no reason to use more complicated
-    /// [`Clone`] only structs.
-    fn from(string: &str) -> Self {
-        Tape::new(string.chars().map(Box::new))
-    }
-}
-
-#[cfg(not(feature = "string-as-copy"))]
-impl From<String> for Tape<Box<char>> {
-    /// Constructs [`Tape<Box<char>>`] from [`String`]. Available when feature
-    /// `string-as-copy` is not using and needs using type annotation
-    /// [`Tape<Box<char>>`]. Most cases of using this 'feature' is in tests
-    /// as proof of concept. There is no reason to use more complicated
-    /// [`Clone`] only structs.
-    fn from(string: String) -> Self {
-        Tape::new(string.chars().map(Box::new))
     }
 }

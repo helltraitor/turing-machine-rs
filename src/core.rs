@@ -122,10 +122,10 @@ pub trait TuringMachine<S: Symbol> {
     ///     ]);
     ///     let machine = Classic::new(program, '0').unwrap();
     ///
-    ///     let conf = Configuration::new_std(Tape::from("010"));
+    ///     let conf = Configuration::new_std(Tape::from("010")).unwrap();
     ///     let result = machine.execute_until(conf, |conf| conf.state == 3);
     ///
-    ///     let expected = Configuration::new(Tape::from("0101"), 2, 3);
+    ///     let expected = Configuration::new(Tape::from("0101"), 2, 3).unwrap();
     ///     assert_eq!(expected, result);
     /// }
     /// ```
@@ -138,12 +138,14 @@ pub trait TuringMachine<S: Symbol> {
     /// Translates and returns a mutated [`Tape`] using [`TuringMachine::execute`]
     /// method in standart begining [`Configuration::new_nrm`].
     fn translate_std(&self, tape: Tape<S>) -> Tape<S> {
-        self.execute(Configuration::new_std(tape)).into_tape()
+        self.execute(Configuration::new_std(tape).unwrap())
+            .into_tape()
     }
 
     /// Translates and returns a mutated [`Tape`] using [`TuringMachine::execute`]
     /// method in normal begining [`Configuration::new_nrm`].
     fn translate_nrm(&self, tape: Tape<S>) -> Tape<S> {
-        self.execute(Configuration::new_nrm(tape)).into_tape()
+        self.execute(Configuration::new_nrm(tape).unwrap())
+            .into_tape()
     }
 }

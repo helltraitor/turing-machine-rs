@@ -83,17 +83,17 @@ mod copy_turing_machine {
         ]);
         let machine = Classic::new(program, ' ').unwrap();
 
-        let conf = Configuration::new(Tape::from("001100"), 5, 0);
+        let conf = Configuration::new(Tape::from("001100"), 5, 0).unwrap();
         let result = machine.execute(conf.clone());
 
         let expected = conf;
 
         assert_eq!(expected, result);
 
-        let conf = Configuration::new_std(Tape::from("001100"));
+        let conf = Configuration::new_std(Tape::from("001100")).unwrap();
         let result = machine.execute(conf);
 
-        let expected = Configuration::new(Tape::from(" 110011 "), 6, 0);
+        let expected = Configuration::new(Tape::from(" 110011 "), 6, 0).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -108,10 +108,10 @@ mod copy_turing_machine {
 
         let machine = Classic::new(program, ' ').unwrap();
 
-        let conf = Configuration::new_std(Tape::from("1"));
+        let conf = Configuration::new_std(Tape::from("1")).unwrap();
         let result = machine.execute_once(conf);
 
-        let expected = Configuration::new(Tape::from("1 "), 1, 1);
+        let expected = Configuration::new(Tape::from("1 "), 1, 1).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -127,7 +127,7 @@ mod copy_turing_machine {
 
         let machine = Classic::new(program, ' ').unwrap();
 
-        let conf = Configuration::new_std(Tape::from(" "));
+        let conf = Configuration::new_std(Tape::from(" ")).unwrap();
         let _ = machine.execute_once(conf);
     }
 
@@ -135,10 +135,10 @@ mod copy_turing_machine {
     fn success_execute_until() {
         let machine = new_success_machine();
 
-        let conf = Configuration::new_std(Tape::from("010"));
+        let conf = Configuration::new_std(Tape::from("010")).unwrap();
         let result = machine.execute_until(conf, |conf| conf.state == 3);
 
-        let expected = Configuration::new(Tape::from("0101"), 2, 3);
+        let expected = Configuration::new(Tape::from("0101"), 2, 3).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -148,7 +148,7 @@ mod copy_turing_machine {
     fn fail_execute_until() {
         let machine = new_fail_machine();
 
-        let conf = Configuration::new_std(Tape::from("010"));
+        let conf = Configuration::new_std(Tape::from("010")).unwrap();
         let _ = machine.execute_until(conf, |conf| conf.state == 3);
     }
 
@@ -214,17 +214,20 @@ mod clone_turing_machine {
         ]);
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
-        let conf = Configuration::new(Tape::from("001100"), 5, 0);
+        let conf =
+            Configuration::new(Tape::new("001100".chars().map(|ch| Box::new(ch))), 5, 0).unwrap();
         let result = machine.execute(conf.clone());
 
         let expected = conf;
 
         assert_eq!(expected, result);
 
-        let conf = Configuration::new_std(Tape::from("001100"));
+        let conf =
+            Configuration::new_std(Tape::new("001100".chars().map(|ch| Box::new(ch)))).unwrap();
         let result = machine.execute(conf);
 
-        let expected = Configuration::new(Tape::from(" 110011 "), 6, 0);
+        let expected =
+            Configuration::new(Tape::new(" 110011 ".chars().map(|ch| Box::new(ch))), 6, 0).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -239,10 +242,10 @@ mod clone_turing_machine {
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
-        let conf = Configuration::new_std(Tape::from("1"));
+        let conf = Configuration::new_std(Tape::new([Box::new('1')])).unwrap();
         let result = machine.execute_once(conf);
 
-        let expected = Configuration::new(Tape::from("1 "), 1, 1);
+        let expected = Configuration::new(Tape::new([Box::new('1'), Box::new(' ')]), 1, 1).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -258,7 +261,7 @@ mod clone_turing_machine {
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
-        let conf = Configuration::new_std(Tape::from(" "));
+        let conf = Configuration::new_std(Tape::new([Box::new(' ')])).unwrap();
         let _ = machine.execute_once(conf);
     }
 
@@ -266,10 +269,11 @@ mod clone_turing_machine {
     fn success_execute_until() {
         let machine = new_success_machine();
 
-        let conf = Configuration::new_std(Tape::from("010"));
+        let conf = Configuration::new_std(Tape::new("010".chars().map(|ch| Box::new(ch)))).unwrap();
         let result = machine.execute_until(conf, |conf| conf.state == 3);
 
-        let expected = Configuration::new(Tape::from("0101"), 2, 3);
+        let expected =
+            Configuration::new(Tape::new("0101".chars().map(|ch| Box::new(ch))), 2, 3).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -279,7 +283,7 @@ mod clone_turing_machine {
     fn fail_execute_until() {
         let machine = new_fail_machine();
 
-        let conf = Configuration::new_std(Tape::from("010"));
+        let conf = Configuration::new_std(Tape::new("010".chars().map(|ch| Box::new(ch)))).unwrap();
         let _ = machine.execute_until(conf, |conf| conf.state == 3);
     }
 
@@ -287,8 +291,8 @@ mod clone_turing_machine {
     fn translate_std() {
         let machine = new_success_machine();
 
-        let result = machine.translate_std(Tape::from("010"));
-        let expected = Tape::from("0101");
+        let result = machine.translate_std(Tape::new("010".chars().map(|ch| Box::new(ch))));
+        let expected = Tape::new("0101".chars().map(|ch| Box::new(ch)));
         assert_eq!(expected, result);
     }
 
@@ -296,8 +300,8 @@ mod clone_turing_machine {
     fn translate_nrm() {
         let machine = new_success_machine();
 
-        let result = machine.translate_nrm(Tape::from("010"));
-        let expected = Tape::from("001");
+        let result = machine.translate_nrm(Tape::new("010".chars().map(|ch| Box::new(ch))));
+        let expected = Tape::new("001".chars().map(|ch| Box::new(ch)));
         assert_eq!(expected, result);
     }
 }
@@ -549,16 +553,16 @@ mod clone_with_for_classic {
         let choose_machine = choose_machine.with(&zerofy).unwrap();
         let choose_machine = choose_machine.with(&left_shift).unwrap();
 
-        let tape = Tape::from("0101101110");
+        let tape = Tape::new("0101101110".chars().map(|ch| Box::new(ch)));
         let result = choose_machine.translate_nrm(tape);
 
-        let expected = Tape::from("0110000000");
+        let expected = Tape::new("0110000000".chars().map(|ch| Box::new(ch)));
         assert_eq!(expected, result);
 
-        let tape = Tape::from("010111010");
+        let tape = Tape::new("010111010".chars().map(|ch| Box::new(ch)));
         let result = choose_machine.translate_nrm(tape);
 
-        let expected = Tape::from("011100000");
+        let expected = Tape::new("011100000".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(expected, result);
     }
@@ -597,17 +601,17 @@ mod clone_with_for_classic {
 
         let choose_machine = choose_machine.unwrap();
 
-        let tape = Tape::from("0101101110");
+        let tape = Tape::new("0101101110".chars().map(|ch| Box::new(ch)));
         let result = choose_machine.translate_nrm(tape);
 
-        let expected = Tape::from("0110000000");
+        let expected = Tape::new("0110000000".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(expected, result);
 
-        let tape = Tape::from("010111010");
+        let tape = Tape::new("010111010".chars().map(|ch| Box::new(ch)));
         let result = choose_machine.translate_nrm(tape);
 
-        let expected = Tape::from("011100000");
+        let expected = Tape::new("011100000".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(expected, result);
     }
