@@ -1,5 +1,4 @@
 # Turing Machine RS
-
 A library for implementing any Turing machine with minimal limitations for the Rust programming language. It is:
 
 * **Low-cost**: Turing Machine RS designed to simulate execution. That's why it cannot be simple, flexible and zero-cost at the same time.
@@ -26,11 +25,9 @@ A library for implementing any Turing machine with minimal limitations for the R
 [API Docs](https://docs.rs/turing-machine-rs)
 
 ## Overview
-
 Turing Machine RS includes a "Classic" realization for Turing Machine (a minimal version for simulation) and a "Debugger" Turing machine that works with any type that implements the Turing Machine Trait.
 
 ## Example
-
 This is a simple example of a Turing Machine that replaces nice by test and test by nice chars.
 
 ```rust
@@ -75,7 +72,6 @@ But this library is not just for the simplest types: you can even use other Turi
 To see a list of the available features flags that can be enabled, check [docs][feature-flag-docs].
 
 ## Getting Help
-
 First, read [examples][examples] or [api][api-documentation]. If examples can't provide answers for you, then you can try to read docs, and after all of that, you can contact me: <helltraitor@hotmail.com>
 
 ### Major links:
@@ -86,22 +82,19 @@ First, read [examples][examples] or [api][api-documentation]. If examples can't 
 [api-documentation]: https://docs.rs/turing-machine-rs
 
 ## Contributing
-
-If you want to improve this crate, just open an issue and describe the problem (shortly if you can), further possible problems or reasons to improve (widely if needed), how to solve this problem, and docs for this or similar cases (optional).
-[See example.](FILL_ME)
+If you want to improve this crate, just open an issue (you can use [example][issue-example] as a template). The issue must contain these headings: `Problem` or `Enhancement`, `Motivation` (reasons to solve the problem or implement the enhancement). It would be very useful to add `Useful sources` for documentation and examples.
+[See example.][issue-example]
+[issue-example]: https://github.com/Helltraitor/turing-machine-rs/issues/2
 
 ## Supported Rust Versions
-
 Turing Machine RS was created in the latest stable version (2021, 1.57) but this library also supports 1.56 (at least) and above.
 
 ## License
-
 This project is licensed under the [MIT license].
 
 [MIT license]: https://github.com/Helltraitor/turing-machine-rs/blob/main/LICENSE
 
 ### Contribution
-
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in Turing Machine RS by you, shall be licensed as MIT, without any additional
 terms or conditions.
