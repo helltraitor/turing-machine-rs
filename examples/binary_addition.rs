@@ -6,7 +6,9 @@ use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::Tape;
 use turing_machine_rs::TuringMachine;
 
-fn main() {
+// For more comfortable coding, use Result<(), String>:
+// `?` postfix symbol is better then `.unwrap()` postfix method call.
+fn main() -> Result<(), String> {
     let mut program = Program::new(vec![' ', '0', '1', '+'], 8);
     program.extend([
         // Sub 1, also init zero check
@@ -53,20 +55,17 @@ fn main() {
         (8, '0', 8, ' ', Direction::Left),
         // 8, '1' - Imp
         (8, '+', 0, ' ', Direction::Right),
-    ]);
-    let machine = Classic::new(program, ' ').unwrap();
+    ])?;
+    let machine = Classic::new(program, ' ')?;
 
     // Change and try to run this example!
     let lhs = "10101";
     let rhs = "111";
-    // --------------
+    // -----------------------------------
+    let tape = Tape::from(format!("{}+{}", lhs, rhs));
 
-    let mut expr = String::new();
-    expr.push_str(lhs);
-    expr.push('+');
-    expr.push_str(rhs);
-    let tape = Tape::from(expr);
-
-    let res = machine.translate_std(tape).unwrap();
+    let res = machine.translate_std(tape)?;
     println!("{} + {} = {}", lhs, rhs, String::from_iter(res.as_vec()));
+
+    Ok(())
 }

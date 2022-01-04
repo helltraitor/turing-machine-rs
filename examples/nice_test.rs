@@ -6,7 +6,9 @@ use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::Tape;
 use turing_machine_rs::TuringMachine;
 
-fn main() {
+// For more comfortable coding, use Result<(), String>:
+// `?` postfix symbol is better then `.unwrap()` postfix method call.
+fn main() -> Result<(), String> {
     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
     program.extend([
         (1, 't', 2, 'n', Direction::Right),
@@ -18,14 +20,16 @@ fn main() {
         (2, 'i', 3, 'e', Direction::Right),
         (3, 'c', 4, 's', Direction::Right),
         (4, 'e', 0, 't', Direction::Center),
-    ]);
-    let machine = Classic::new(program, '_').unwrap();
+    ])?;
+    let machine = Classic::new(program, '_')?;
 
     let test = Tape::from("test");
-    let nice = machine.translate_nrm(test.clone()).unwrap();
+    let nice = machine.translate_nrm(test.clone())?;
     println!(
         "{} {}!",
         String::from_iter(nice.as_vec()),
         String::from_iter(test.as_vec())
     );
+
+    Ok(())
 }
