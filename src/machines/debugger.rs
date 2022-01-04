@@ -5,12 +5,10 @@ use crate::{Symbol, TuringMachine};
 type CHandler<S> = Box<dyn Fn(&Configuration<S>)>;
 type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 
-#[allow(clippy::needless_doctest_main)]
 /// [`Debugger`] is an super useful [`TuringMachine`] for debugging another
-/// Turing machines! All Turing Machines in tests were debugging by this machine.
+/// Turing machine! This machine debugged all Turing machines in tests.
 ///
-/// Note: this machine is not implementing [`crate::With`] trait so it must be
-/// used only after using `with` for superposition.
+/// Note: this machine is not implementing [`crate::With`].
 ///
 /// # Examples
 /// ```rust
@@ -24,24 +22,28 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::{Configuration, Tape};
 ///
-/// fn main() {
+/// fn main() -> Result<(), String> {
 ///     let mut program = Program::new(vec![' '], State(1));
-///     program.extend([(1, ' ', 1, ' ', Move::Right)]);
-///     let machine = Classic::new(program, ' ').unwrap();
+///     program.extend([(1, ' ', 1, ' ', Move::Right)])?;
 ///
+///     let machine = Classic::new(program, ' ')?;
 ///     let mut debugger = Debugger::new(machine);
-///     let conf = Configuration::new_nrm(Tape::from("   ")).unwrap();
+///
+///     let conf = Configuration::new_nrm(Tape::from("   "))?;
 ///
 ///     let buffer = Rc::new(RefCell::new(String::new()));
 ///
 ///     let c_buffer = buffer.clone();
 ///     debugger.set_c_handler(move |_| {
-///     let mut buffer = c_buffer.borrow_mut();
+///         let mut buffer = c_buffer.borrow_mut();
 ///         buffer.push('c');
 ///     });
-///     let conf = debugger.execute_once(conf).unwrap();
-///     debugger.execute_once(conf).unwrap();
+///
+///     let conf = debugger.execute_once(conf)?;
+///     debugger.execute_once(conf)?;
+///
 ///     assert_eq!(String::from("cc"), buffer.deref().borrow().as_ref());
+///     Ok(())
 /// }
 /// ```
 pub struct Debugger<Machine, S: Symbol>
@@ -58,8 +60,9 @@ where
     Machine: TuringMachine<S>,
 {
     /// Constructs a new [`Debugger`] with a [`TuringMachine`] and no handlers.
-    /// For setup handlers, use must use `mut` within [`Debugger::set_c_handler`]
-    /// and [`Debugger::set_i_handler`].
+    ///
+    /// For setup handlers, use the [`Debugger::set_c_handler`]
+    /// and the [`Debugger::set_i_handler`] methods.
     pub fn new(machine: Machine) -> Self {
         Debugger {
             machine,
@@ -91,8 +94,8 @@ where
 {
     /// Executes [`Configuration`] once by mutation.
     ///
-    /// Works quickly when no handler set (but probably you don't wnat to use
-    /// the debugger without tools).
+    /// Works quickly when no handler is set (but you probably don't want to
+    /// use the debugger without the debugging).
     ///
     /// # Panics
     /// [`Debugger`] could panic only if source code is broken - this would be a bug.
@@ -106,7 +109,7 @@ where
         }
         if let Some(ref i_handler) = self.i_handler {
             let head = Head::new(conf.state, conf.get_symbol().clone());
-            let direction = match (conf.index(), next.index()) {
+            let movement = match (conf.index(), next.index()) {
                 (old, new) if old < new => Move::Right,
                 (old, new) if old == new => Move::None,
                 (old, new) if old > new => Move::Right,
@@ -116,7 +119,7 @@ where
                     new
                 )
             };
-            let tail = Tail::new(next.state, next.get_symbol().clone(), direction);
+            let tail = Tail::new(next.state, next.get_symbol().clone(), movement);
             i_handler(&head, &tail);
         }
         Ok(next)
@@ -124,8 +127,8 @@ where
 
     /// Executes [`Configuration`] until predicate is `false` by mutation.
     ///
-    /// Uses [`Debugger::execute_once`] in loop. Works quickly when no handler
-    /// set (but probably you don't wnat to use the debugger without tools).
+    /// Uses the [`Debugger::execute_once`] method in the loop. Works quickly
+    /// when no handler set (but probably you don't wnat to use the debugger without tools).
     fn execute_until(
         &self,
         mut conf: Configuration<S>,
