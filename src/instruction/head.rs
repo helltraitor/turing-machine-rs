@@ -2,9 +2,9 @@ use crate::Symbol;
 
 use std::fmt::{Display, Error, Formatter};
 
-/// Head is the first part of [`crate::instruction::Instruction`]
-/// and is used as a container for state and symbol. Head fields
-/// doesn't needs in control or protection so they are public.
+/// [`Head`] is the first part of [`crate::instruction::Instruction`]
+/// and is used as a container for the state and the symbol. [`Head`]
+/// fields doesn't needs in control or protection so they are public.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Head<S: Symbol> {
     /// State of instucrion must be a non-negative number. This field could

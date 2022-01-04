@@ -1,4 +1,4 @@
-use turing_machine_rs::instruction::{Direction, Head, Instruction, Tail};
+use turing_machine_rs::instruction::{Head, Instruction, Move, Tail};
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::With;
 
@@ -30,11 +30,11 @@ mod copy {
         let mut origin = Program::new(vec!['0', '1'], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(1, '0', Direction::Right),
+            Tail::new(1, '0', Move::Right),
         ));
 
         let result = origin.get(&Head::new(1, '0')).unwrap().unwrap();
-        let expected = Instruction::new(Head::new(1, '0'), Tail::new(1, '0', Direction::Right));
+        let expected = Instruction::new(Head::new(1, '0'), Tail::new(1, '0', Move::Right));
         assert_eq!(&expected, result);
 
         let result = origin.get(&Head::new(1, '1')).unwrap();
@@ -60,7 +60,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(1, '0'),
-                Tail::new(1, '0', Direction::Right),
+                Tail::new(1, '0', Move::Right),
             ))
             .unwrap();
     }
@@ -72,7 +72,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(0, '0'),
-                Tail::new(1, '0', Direction::Right),
+                Tail::new(1, '0', Move::Right),
             ))
             .unwrap();
     }
@@ -84,7 +84,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(1, '9'),
-                Tail::new(1, '0', Direction::Right),
+                Tail::new(1, '0', Move::Right),
             ))
             .unwrap();
     }
@@ -96,7 +96,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(1, '0'),
-                Tail::new(1, '9', Direction::Right),
+                Tail::new(1, '9', Move::Right),
             ))
             .unwrap();
     }
@@ -108,7 +108,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(2, '0'),
-                Tail::new(1, '0', Direction::Right),
+                Tail::new(1, '0', Move::Right),
             ))
             .unwrap();
     }
@@ -120,7 +120,7 @@ mod copy {
         origin
             .insert(Instruction::new(
                 Head::new(1, '0'),
-                Tail::new(2, '0', Direction::Right),
+                Tail::new(2, '0', Move::Right),
             ))
             .unwrap();
     }
@@ -135,18 +135,15 @@ mod copy_extend {
         let mut expected = Program::new(vec!['0', '1'], 1);
         let _ = expected.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(1, '0', Direction::Right),
+            Tail::new(1, '0', Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(0, '0', Direction::Right),
+            Tail::new(0, '0', Move::Right),
         ));
 
         let mut program = Program::new(vec!['0', '1'], 1);
-        program.extend([
-            (1, '0', 1, '0', Direction::Right),
-            (1, '1', 0, '0', Direction::Right),
-        ]);
+        program.extend([(1, '0', 1, '0', Move::Right), (1, '1', 0, '0', Move::Right)]);
 
         assert_eq!(expected, program);
     }
@@ -161,29 +158,29 @@ mod copy_with {
         let mut origin = Program::new(vec!['0', '1'], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(1, '0', Direction::Right),
+            Tail::new(1, '0', Move::Right),
         ));
         let _ = origin.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(0, '0', Direction::Right),
+            Tail::new(0, '0', Move::Right),
         ));
 
         let mut extension = Program::new(vec!['0', '1'], 2);
         let _ = extension.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(0, '0', Direction::Left),
+            Tail::new(0, '0', Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(2, '1', Direction::Right),
+            Tail::new(2, '1', Move::Right),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(2, '0'),
-            Tail::new(0, '0', Direction::Left),
+            Tail::new(0, '0', Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(2, '1'),
-            Tail::new(2, '1', Direction::Right),
+            Tail::new(2, '1', Move::Right),
         ));
 
         let result = origin.with(&extension).unwrap();
@@ -191,27 +188,27 @@ mod copy_with {
         let mut expected = Program::new(vec!['0', '1'], 3);
         let _ = expected.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(1, '0', Direction::Right),
+            Tail::new(1, '0', Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(2, '0', Direction::Right),
+            Tail::new(2, '0', Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(2, '0'),
-            Tail::new(0, '0', Direction::Left),
+            Tail::new(0, '0', Move::Left),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(2, '1'),
-            Tail::new(3, '1', Direction::Right),
+            Tail::new(3, '1', Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(3, '0'),
-            Tail::new(0, '0', Direction::Left),
+            Tail::new(0, '0', Move::Left),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(3, '1'),
-            Tail::new(3, '1', Direction::Right),
+            Tail::new(3, '1', Move::Right),
         ));
 
         assert_eq!(expected, result);
@@ -223,17 +220,17 @@ mod copy_with {
         let mut origin = Program::new(vec!['0'], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(1, '0', Direction::Right),
+            Tail::new(1, '0', Move::Right),
         ));
 
         let mut extension = Program::new(vec!['0', '1'], 2);
         let _ = extension.insert(Instruction::new(
             Head::new(1, '0'),
-            Tail::new(0, '0', Direction::Left),
+            Tail::new(0, '0', Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(2, '1', Direction::Right),
+            Tail::new(2, '1', Move::Right),
         ));
 
         origin.with(&extension).unwrap();
@@ -260,14 +257,14 @@ mod clone {
         let mut origin = Program::new(vec![Box::new('0'), Box::new('1')], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         ));
 
         let result = origin.get(&Head::new(1, Box::new('0'))).unwrap();
 
         let e_value = Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         );
         let expected = Some(&e_value);
         assert_eq!(expected, result);
@@ -295,7 +292,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(1, Box::new('0')),
-                Tail::new(1, Box::new('0'), Direction::Right),
+                Tail::new(1, Box::new('0'), Move::Right),
             ))
             .unwrap();
     }
@@ -307,7 +304,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(0, Box::new('0')),
-                Tail::new(1, Box::new('0'), Direction::Right),
+                Tail::new(1, Box::new('0'), Move::Right),
             ))
             .unwrap();
     }
@@ -319,7 +316,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(1, Box::new('9')),
-                Tail::new(1, Box::new('0'), Direction::Right),
+                Tail::new(1, Box::new('0'), Move::Right),
             ))
             .unwrap();
     }
@@ -331,7 +328,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(1, Box::new('0')),
-                Tail::new(1, Box::new('9'), Direction::Right),
+                Tail::new(1, Box::new('9'), Move::Right),
             ))
             .unwrap();
     }
@@ -343,7 +340,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(2, Box::new('0')),
-                Tail::new(1, Box::new('0'), Direction::Right),
+                Tail::new(1, Box::new('0'), Move::Right),
             ))
             .unwrap();
     }
@@ -355,7 +352,7 @@ mod clone {
         origin
             .insert(Instruction::new(
                 Head::new(1, Box::new('0')),
-                Tail::new(2, Box::new('0'), Direction::Right),
+                Tail::new(2, Box::new('0'), Move::Right),
             ))
             .unwrap();
     }
@@ -370,17 +367,17 @@ mod clone_extend {
         let mut expected = Program::new(vec![Box::new('0'), Box::new('1')], 1);
         let _ = expected.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(0, Box::new('0'), Direction::Right),
+            Tail::new(0, Box::new('0'), Move::Right),
         ));
 
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 1);
         program.extend([
-            (1, Box::new('0'), 1, Box::new('0'), Direction::Right),
-            (1, Box::new('1'), 0, Box::new('0'), Direction::Right),
+            (1, Box::new('0'), 1, Box::new('0'), Move::Right),
+            (1, Box::new('1'), 0, Box::new('0'), Move::Right),
         ]);
 
         assert_eq!(expected, program);
@@ -396,29 +393,29 @@ mod clone_with {
         let mut origin = Program::new(vec![Box::new('0'), Box::new('1')], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         ));
         let _ = origin.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(0, Box::new('0'), Direction::Right),
+            Tail::new(0, Box::new('0'), Move::Right),
         ));
 
         let mut extension = Program::new(vec![Box::new('0'), Box::new('1')], 2);
         let _ = extension.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(0, Box::new('0'), Direction::Left),
+            Tail::new(0, Box::new('0'), Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(2, Box::new('1'), Direction::Right),
+            Tail::new(2, Box::new('1'), Move::Right),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(2, Box::new('0')),
-            Tail::new(0, Box::new('0'), Direction::Left),
+            Tail::new(0, Box::new('0'), Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(2, Box::new('1')),
-            Tail::new(2, Box::new('1'), Direction::Right),
+            Tail::new(2, Box::new('1'), Move::Right),
         ));
 
         let result = origin.with(&extension).unwrap();
@@ -426,27 +423,27 @@ mod clone_with {
         let mut expected = Program::new(vec![Box::new('0'), Box::new('1')], 3);
         let _ = expected.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(2, Box::new('0'), Direction::Right),
+            Tail::new(2, Box::new('0'), Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(2, Box::new('0')),
-            Tail::new(0, Box::new('0'), Direction::Left),
+            Tail::new(0, Box::new('0'), Move::Left),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(2, Box::new('1')),
-            Tail::new(3, Box::new('1'), Direction::Right),
+            Tail::new(3, Box::new('1'), Move::Right),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(3, Box::new('0')),
-            Tail::new(0, Box::new('0'), Direction::Left),
+            Tail::new(0, Box::new('0'), Move::Left),
         ));
         let _ = expected.insert(Instruction::new(
             Head::new(3, Box::new('1')),
-            Tail::new(3, Box::new('1'), Direction::Right),
+            Tail::new(3, Box::new('1'), Move::Right),
         ));
 
         assert_eq!(expected, result);
@@ -458,17 +455,17 @@ mod clone_with {
         let mut origin = Program::new(vec![Box::new('0')], 1);
         let _ = origin.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(1, Box::new('0'), Direction::Right),
+            Tail::new(1, Box::new('0'), Move::Right),
         ));
 
         let mut extension = Program::new(vec![Box::new('0'), Box::new('1')], 2);
         let _ = extension.insert(Instruction::new(
             Head::new(1, Box::new('0')),
-            Tail::new(0, Box::new('0'), Direction::Left),
+            Tail::new(0, Box::new('0'), Move::Left),
         ));
         let _ = extension.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(2, Box::new('1'), Direction::Right),
+            Tail::new(2, Box::new('1'), Move::Right),
         ));
 
         origin.with(&extension).unwrap();

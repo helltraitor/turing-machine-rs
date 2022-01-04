@@ -1,6 +1,6 @@
 use std::fmt::{Display, Error, Formatter};
 
-use crate::instruction::Direction;
+use crate::instruction::Move;
 use crate::state::Tape;
 use crate::Symbol;
 
@@ -117,12 +117,12 @@ impl<S: Symbol> Configuration<S> {
     /// Shifts [`Tape`] to left, right or stands still. If [`Configuration`]
     /// reachs begin or end of the tape then tape is extends by [`Tape::insert`]
     /// method, otherwise only changes self index.
-    pub fn shift(&mut self, direction: Direction, default: S) {
-        match direction {
-            Direction::Left if self.index == 0 => self.tape.insert(0, default),
-            Direction::Left => self.index -= 1,
-            Direction::Center => {}
-            Direction::Right => {
+    pub fn shift(&mut self, movement: Move, default: S) {
+        match movement {
+            Move::Left if self.index == 0 => self.tape.insert(0, default),
+            Move::Left => self.index -= 1,
+            Move::None => {}
+            Move::Right => {
                 self.index += 1;
                 if self.index == self.tape.len() {
                     self.tape.insert(self.index, default);

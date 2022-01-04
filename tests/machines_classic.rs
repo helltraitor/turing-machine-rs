@@ -1,4 +1,4 @@
-use turing_machine_rs::instruction::{Direction, Head, Instruction, Tail};
+use turing_machine_rs::instruction::{Head, Instruction, Move, Tail};
 use turing_machine_rs::machines::Classic;
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
@@ -47,10 +47,10 @@ mod copy_turing_machine {
     fn new_fail_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 3);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (1, '1', 1, '1', Direction::Left),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (1, '1', 1, '1', Move::Left),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 3, '0', Move::Left),
         ]);
 
         Classic::new(program, '0').unwrap()
@@ -59,12 +59,12 @@ mod copy_turing_machine {
     fn new_success_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 3);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (1, '1', 1, '1', Direction::Left),
-            (2, '0', 3, '1', Direction::Left),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (1, '1', 1, '1', Move::Left),
+            (2, '0', 3, '1', Move::Left),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 3, '0', Move::Left),
         ]);
 
         Classic::new(program, '0').unwrap()
@@ -74,12 +74,12 @@ mod copy_turing_machine {
     fn execute() {
         let mut program = Program::new(vec![' ', '0', '1'], 2);
         program.extend([
-            (1, ' ', 2, ' ', Direction::Right),
-            (1, '0', 1, '1', Direction::Left),
-            (1, '1', 1, '0', Direction::Left),
-            (2, ' ', 0, ' ', Direction::Left),
-            (2, '0', 2, '0', Direction::Right),
-            (2, '1', 2, '1', Direction::Right),
+            (1, ' ', 2, ' ', Move::Right),
+            (1, '0', 1, '1', Move::Left),
+            (1, '1', 1, '0', Move::Left),
+            (2, ' ', 0, ' ', Move::Left),
+            (2, '0', 2, '0', Move::Right),
+            (2, '1', 2, '1', Move::Right),
         ]);
         let machine = Classic::new(program, ' ').unwrap();
 
@@ -103,7 +103,7 @@ mod copy_turing_machine {
         let mut program = Program::new(vec![' ', '1'], 1);
         let _ = program.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(1, '1', Direction::Right),
+            Tail::new(1, '1', Move::Right),
         ));
 
         let machine = Classic::new(program, ' ').unwrap();
@@ -122,7 +122,7 @@ mod copy_turing_machine {
         let mut program = Program::new(vec![' ', '1'], 1);
         let _ = program.insert(Instruction::new(
             Head::new(1, '1'),
-            Tail::new(1, '1', Direction::Right),
+            Tail::new(1, '1', Move::Right),
         ));
 
         let machine = Classic::new(program, ' ').unwrap();
@@ -178,10 +178,10 @@ mod clone_turing_machine {
     fn new_fail_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
         ]);
 
         Classic::new(program, Box::new('0')).unwrap()
@@ -190,12 +190,12 @@ mod clone_turing_machine {
     fn new_success_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
-            (2, Box::new('0'), 3, Box::new('1'), Direction::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+            (2, Box::new('0'), 3, Box::new('1'), Move::Left),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
         ]);
 
         Classic::new(program, Box::new('0')).unwrap()
@@ -205,12 +205,12 @@ mod clone_turing_machine {
     fn execute() {
         let mut program = Program::new(vec![Box::new(' '), Box::new('0'), Box::new('1')], 2);
         program.extend([
-            (1, Box::new(' '), 2, Box::new(' '), Direction::Right),
-            (1, Box::new('0'), 1, Box::new('1'), Direction::Left),
-            (1, Box::new('1'), 1, Box::new('0'), Direction::Left),
-            (2, Box::new(' '), 0, Box::new(' '), Direction::Left),
-            (2, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
+            (1, Box::new(' '), 2, Box::new(' '), Move::Right),
+            (1, Box::new('0'), 1, Box::new('1'), Move::Left),
+            (1, Box::new('1'), 1, Box::new('0'), Move::Left),
+            (2, Box::new(' '), 0, Box::new(' '), Move::Left),
+            (2, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
         ]);
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
@@ -237,7 +237,7 @@ mod clone_turing_machine {
         let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
         let _ = program.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(1, Box::new('1'), Direction::Right),
+            Tail::new(1, Box::new('1'), Move::Right),
         ));
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
@@ -256,7 +256,7 @@ mod clone_turing_machine {
         let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
         let _ = program.insert(Instruction::new(
             Head::new(1, Box::new('1')),
-            Tail::new(1, Box::new('1'), Direction::Right),
+            Tail::new(1, Box::new('1'), Move::Right),
         ));
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
@@ -317,12 +317,12 @@ mod copy_with_for_classic {
     fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 4);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (2, '0', 3, '0', Direction::Left),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 4, '0', Direction::Center),
-            (4, '0', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (2, '0', 3, '0', Move::Left),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 4, '0', Move::None),
+            (4, '0', 3, '0', Move::Left),
         ]);
         Classic::new(program, '0').unwrap()
     }
@@ -330,9 +330,9 @@ mod copy_with_for_classic {
     fn new_left_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
         program.extend([
-            (1, '0', 2, '0', Direction::Left),
-            (2, '0', 0, '0', Direction::Center),
-            (2, '1', 2, '1', Direction::Left),
+            (1, '0', 2, '0', Move::Left),
+            (2, '0', 0, '0', Move::None),
+            (2, '1', 2, '1', Move::Left),
         ]);
         Classic::new(program, '0').unwrap()
     }
@@ -340,9 +340,9 @@ mod copy_with_for_classic {
     fn new_right_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (2, '0', 0, '0', Direction::Center),
-            (2, '1', 2, '1', Direction::Right),
+            (1, '0', 2, '0', Move::Right),
+            (2, '0', 0, '0', Move::None),
+            (2, '1', 2, '1', Move::Right),
         ]);
         Classic::new(program, '0').unwrap()
     }
@@ -350,35 +350,35 @@ mod copy_with_for_classic {
     fn new_trans_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 19);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (2, '0', 3, '0', Direction::Center),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 4, '0', Direction::Left),
-            (4, '0', 7, '0', Direction::Center),
-            (4, '1', 5, '0', Direction::Center),
-            (5, '0', 6, '0', Direction::Left),
-            (6, '0', 7, '1', Direction::Center),
-            (6, '1', 6, '1', Direction::Left),
-            (7, '0', 16, '1', Direction::Center),
-            (7, '1', 8, '1', Direction::Left),
-            (8, '0', 18, '0', Direction::Right),
-            (8, '1', 9, '0', Direction::Center),
-            (9, '0', 10, '0', Direction::Right),
-            (10, '0', 11, '1', Direction::Center),
-            (10, '1', 10, '1', Direction::Right),
-            (11, '1', 12, '1', Direction::Left),
-            (12, '1', 13, '0', Direction::Center),
-            (13, '0', 14, '0', Direction::Left),
-            (14, '0', 15, '1', Direction::Center),
-            (14, '1', 14, '1', Direction::Left),
-            (15, '0', 7, '0', Direction::Center),
-            (15, '1', 7, '1', Direction::Center),
-            (16, '1', 17, '1', Direction::Left),
-            (17, '0', 19, '0', Direction::Right),
-            (17, '1', 15, '0', Direction::Center),
-            (18, '0', 0, '0', Direction::Center),
-            (18, '1', 18, '1', Direction::Right),
-            (19, '1', 0, '0', Direction::Center),
+            (1, '0', 2, '0', Move::Right),
+            (2, '0', 3, '0', Move::None),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 4, '0', Move::Left),
+            (4, '0', 7, '0', Move::None),
+            (4, '1', 5, '0', Move::None),
+            (5, '0', 6, '0', Move::Left),
+            (6, '0', 7, '1', Move::None),
+            (6, '1', 6, '1', Move::Left),
+            (7, '0', 16, '1', Move::None),
+            (7, '1', 8, '1', Move::Left),
+            (8, '0', 18, '0', Move::Right),
+            (8, '1', 9, '0', Move::None),
+            (9, '0', 10, '0', Move::Right),
+            (10, '0', 11, '1', Move::None),
+            (10, '1', 10, '1', Move::Right),
+            (11, '1', 12, '1', Move::Left),
+            (12, '1', 13, '0', Move::None),
+            (13, '0', 14, '0', Move::Left),
+            (14, '0', 15, '1', Move::None),
+            (14, '1', 14, '1', Move::Left),
+            (15, '0', 7, '0', Move::None),
+            (15, '1', 7, '1', Move::None),
+            (16, '1', 17, '1', Move::Left),
+            (17, '0', 19, '0', Move::Right),
+            (17, '1', 15, '0', Move::None),
+            (18, '0', 0, '0', Move::None),
+            (18, '1', 18, '1', Move::Right),
+            (19, '1', 0, '0', Move::None),
         ]);
         Classic::new(program, '0').unwrap()
     }
@@ -473,12 +473,12 @@ mod clone_with_for_classic {
     fn new_zerofy_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (2, Box::new('0'), 3, Box::new('0'), Direction::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 4, Box::new('0'), Direction::Center),
-            (4, Box::new('0'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (2, Box::new('0'), 3, Box::new('0'), Move::Left),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 4, Box::new('0'), Move::None),
+            (4, Box::new('0'), 3, Box::new('0'), Move::Left),
         ]);
         Classic::new(program, Box::new('0')).unwrap()
     }
@@ -486,9 +486,9 @@ mod clone_with_for_classic {
     fn new_left_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Left),
-            (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Left),
+            (2, Box::new('0'), 0, Box::new('0'), Move::None),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Left),
         ]);
         Classic::new(program, Box::new('0')).unwrap()
     }
@@ -496,9 +496,9 @@ mod clone_with_for_classic {
     fn new_right_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (2, Box::new('0'), 0, Box::new('0'), Move::None),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
         ]);
         Classic::new(program, Box::new('0')).unwrap()
     }
@@ -506,35 +506,35 @@ mod clone_with_for_classic {
     fn new_trans_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 19);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (2, Box::new('0'), 3, Box::new('0'), Direction::Center),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 4, Box::new('0'), Direction::Left),
-            (4, Box::new('0'), 7, Box::new('0'), Direction::Center),
-            (4, Box::new('1'), 5, Box::new('0'), Direction::Center),
-            (5, Box::new('0'), 6, Box::new('0'), Direction::Left),
-            (6, Box::new('0'), 7, Box::new('1'), Direction::Center),
-            (6, Box::new('1'), 6, Box::new('1'), Direction::Left),
-            (7, Box::new('0'), 16, Box::new('1'), Direction::Center),
-            (7, Box::new('1'), 8, Box::new('1'), Direction::Left),
-            (8, Box::new('0'), 18, Box::new('0'), Direction::Right),
-            (8, Box::new('1'), 9, Box::new('0'), Direction::Center),
-            (9, Box::new('0'), 10, Box::new('0'), Direction::Right),
-            (10, Box::new('0'), 11, Box::new('1'), Direction::Center),
-            (10, Box::new('1'), 10, Box::new('1'), Direction::Right),
-            (11, Box::new('1'), 12, Box::new('1'), Direction::Left),
-            (12, Box::new('1'), 13, Box::new('0'), Direction::Center),
-            (13, Box::new('0'), 14, Box::new('0'), Direction::Left),
-            (14, Box::new('0'), 15, Box::new('1'), Direction::Center),
-            (14, Box::new('1'), 14, Box::new('1'), Direction::Left),
-            (15, Box::new('0'), 7, Box::new('0'), Direction::Center),
-            (15, Box::new('1'), 7, Box::new('1'), Direction::Center),
-            (16, Box::new('1'), 17, Box::new('1'), Direction::Left),
-            (17, Box::new('0'), 19, Box::new('0'), Direction::Right),
-            (17, Box::new('1'), 15, Box::new('0'), Direction::Center),
-            (18, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (18, Box::new('1'), 18, Box::new('1'), Direction::Right),
-            (19, Box::new('1'), 0, Box::new('0'), Direction::Center),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (2, Box::new('0'), 3, Box::new('0'), Move::None),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 4, Box::new('0'), Move::Left),
+            (4, Box::new('0'), 7, Box::new('0'), Move::None),
+            (4, Box::new('1'), 5, Box::new('0'), Move::None),
+            (5, Box::new('0'), 6, Box::new('0'), Move::Left),
+            (6, Box::new('0'), 7, Box::new('1'), Move::None),
+            (6, Box::new('1'), 6, Box::new('1'), Move::Left),
+            (7, Box::new('0'), 16, Box::new('1'), Move::None),
+            (7, Box::new('1'), 8, Box::new('1'), Move::Left),
+            (8, Box::new('0'), 18, Box::new('0'), Move::Right),
+            (8, Box::new('1'), 9, Box::new('0'), Move::None),
+            (9, Box::new('0'), 10, Box::new('0'), Move::Right),
+            (10, Box::new('0'), 11, Box::new('1'), Move::None),
+            (10, Box::new('1'), 10, Box::new('1'), Move::Right),
+            (11, Box::new('1'), 12, Box::new('1'), Move::Left),
+            (12, Box::new('1'), 13, Box::new('0'), Move::None),
+            (13, Box::new('0'), 14, Box::new('0'), Move::Left),
+            (14, Box::new('0'), 15, Box::new('1'), Move::None),
+            (14, Box::new('1'), 14, Box::new('1'), Move::Left),
+            (15, Box::new('0'), 7, Box::new('0'), Move::None),
+            (15, Box::new('1'), 7, Box::new('1'), Move::None),
+            (16, Box::new('1'), 17, Box::new('1'), Move::Left),
+            (17, Box::new('0'), 19, Box::new('0'), Move::Right),
+            (17, Box::new('1'), 15, Box::new('0'), Move::None),
+            (18, Box::new('0'), 0, Box::new('0'), Move::None),
+            (18, Box::new('1'), 18, Box::new('1'), Move::Right),
+            (19, Box::new('1'), 0, Box::new('0'), Move::None),
         ]);
         Classic::new(program, Box::new('0')).unwrap()
     }

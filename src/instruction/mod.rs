@@ -8,12 +8,12 @@
 //! and warranties except of no panic, no errors and no self changing
 //! (no one of methods can change these structs).
 
-mod direction;
 mod head;
+mod movement;
 mod tail;
 
-pub use direction::Direction;
 pub use head::Head;
+pub use movement::Move;
 pub use tail::Tail;
 
 use std::fmt::{Display, Error, Formatter};

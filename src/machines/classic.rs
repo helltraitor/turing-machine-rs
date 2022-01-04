@@ -50,7 +50,7 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
         };
         conf.state = inst.tail.state;
         conf.set_symbol(inst.tail.symbol.clone());
-        conf.shift(inst.tail.direction, self.default.clone());
+        conf.shift(inst.tail.movement, self.default.clone());
         Ok(conf)
     }
 
@@ -77,7 +77,7 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
             };
             conf.state = inst.tail.state;
             conf.set_symbol(inst.tail.symbol.clone());
-            conf.shift(inst.tail.direction, self.default.clone());
+            conf.shift(inst.tail.movement, self.default.clone());
         }
         Ok(conf)
     }

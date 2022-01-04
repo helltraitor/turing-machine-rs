@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
-use turing_machine_rs::instruction::Direction;
+use turing_machine_rs::instruction::Move;
 use turing_machine_rs::machines::{Classic, Debugger};
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
@@ -14,7 +14,7 @@ mod copy {
 
     fn new_custom_machine() -> Classic<char> {
         let mut program = Program::new(vec![' '], 1);
-        program.extend([(1, ' ', 1, ' ', Direction::Right)]);
+        program.extend([(1, ' ', 1, ' ', Move::Right)]);
 
         Classic::new(program, ' ').unwrap()
     }
@@ -57,7 +57,7 @@ mod clone {
 
     fn new_custom_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new(' ')], 1);
-        program.extend([(1, Box::new(' '), 1, Box::new(' '), Direction::Right)]);
+        program.extend([(1, Box::new(' '), 1, Box::new(' '), Move::Right)]);
 
         Classic::new(program, Box::new(' ')).unwrap()
     }
@@ -101,12 +101,12 @@ mod copy_turing_machine {
     fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 4);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (2, '0', 3, '0', Direction::Left),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 4, '0', Direction::Center),
-            (4, '0', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (2, '0', 3, '0', Move::Left),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 4, '0', Move::None),
+            (4, '0', 3, '0', Move::Left),
         ]);
         Classic::new(program, '0').unwrap()
     }
@@ -161,12 +161,12 @@ mod copy_turing_machine {
     fn translate_std() {
         let mut program = Program::new(vec!['0', '1'], 3);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (1, '1', 1, '1', Direction::Left),
-            (2, '0', 3, '1', Direction::Left),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (1, '1', 1, '1', Move::Left),
+            (2, '0', 3, '1', Move::Left),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 3, '0', Move::Left),
         ]);
         let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
@@ -180,12 +180,12 @@ mod copy_turing_machine {
     fn translate_nrm() {
         let mut program = Program::new(vec!['0', '1'], 3);
         program.extend([
-            (1, '0', 2, '0', Direction::Right),
-            (1, '1', 1, '1', Direction::Left),
-            (2, '0', 3, '1', Direction::Left),
-            (2, '1', 2, '1', Direction::Right),
-            (3, '0', 0, '0', Direction::Center),
-            (3, '1', 3, '0', Direction::Left),
+            (1, '0', 2, '0', Move::Right),
+            (1, '1', 1, '1', Move::Left),
+            (2, '0', 3, '1', Move::Left),
+            (2, '1', 2, '1', Move::Right),
+            (3, '0', 0, '0', Move::None),
+            (3, '1', 3, '0', Move::Left),
         ]);
         let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
@@ -205,12 +205,12 @@ mod clone_turing_machine {
     fn new_zerofy_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (2, Box::new('0'), 3, Box::new('0'), Direction::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 4, Box::new('0'), Direction::Center),
-            (4, Box::new('0'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (2, Box::new('0'), 3, Box::new('0'), Move::Left),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 4, Box::new('0'), Move::None),
+            (4, Box::new('0'), 3, Box::new('0'), Move::Left),
         ]);
         Classic::new(program, Box::new('0')).unwrap()
     }
@@ -270,12 +270,12 @@ mod clone_turing_machine {
     fn translate_std() {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
-            (2, Box::new('0'), 3, Box::new('1'), Direction::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+            (2, Box::new('0'), 3, Box::new('1'), Move::Left),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
         ]);
         let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);
@@ -291,12 +291,12 @@ mod clone_turing_machine {
     fn translate_nrm() {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
         program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
-            (2, Box::new('0'), 3, Box::new('1'), Direction::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
-            (3, Box::new('1'), 3, Box::new('0'), Direction::Left),
+            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+            (2, Box::new('0'), 3, Box::new('1'), Move::Left),
+            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            (3, Box::new('0'), 0, Box::new('0'), Move::None),
+            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
         ]);
         let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);

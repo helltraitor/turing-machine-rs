@@ -1,4 +1,4 @@
-use crate::instruction::{Direction, Head, Tail};
+use crate::instruction::{Head, Move, Tail};
 use crate::state::Configuration;
 use crate::{Symbol, TuringMachine};
 
@@ -19,14 +19,14 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// use std::rc::Rc;
 ///
 /// use turing_machine_rs::TuringMachine;
-/// use turing_machine_rs::instruction::Direction;
+/// use turing_machine_rs::instruction::Move;
 /// use turing_machine_rs::machines::{Debugger, Classic};
 /// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::{Configuration, Tape};
 ///
 /// fn main() {
 ///     let mut program = Program::new(vec![' '], 1);
-///     program.extend([(1, ' ', 1, ' ', Direction::Right)]);
+///     program.extend([(1, ' ', 1, ' ', Move::Right)]);
 ///     let machine = Classic::new(program, ' ').unwrap();
 ///
 ///     let mut debugger = Debugger::new(machine);
@@ -107,9 +107,9 @@ where
         if let Some(ref i_handler) = self.i_handler {
             let head = Head::new(conf.state, conf.get_symbol().clone());
             let direction = match (conf.index(), next.index()) {
-                (old, new) if old < new => Direction::Right,
-                (old, new) if old == new => Direction::Center,
-                (old, new) if old > new => Direction::Right,
+                (old, new) if old < new => Move::Right,
+                (old, new) if old == new => Move::None,
+                (old, new) if old > new => Move::Right,
                 (old, new) => panic!(
                     "execute_once error: not all compare cases are covered for old {} and new {} indexes",
                     old,

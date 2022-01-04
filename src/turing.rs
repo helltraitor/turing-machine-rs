@@ -14,7 +14,7 @@ use crate::Symbol;
 /// ```rust
 /// extern crate turing_machine_rs;
 ///
-/// use turing_machine_rs::instruction::Direction;
+/// use turing_machine_rs::instruction::Move;
 /// use turing_machine_rs::machines::Classic;
 /// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::Tape;
@@ -25,16 +25,16 @@ use crate::Symbol;
 ///     // Trait for more comfortable coding
 ///     program.extend([
 ///         // Instruction consists of Head and Tail parts
-///         // Head state, Head symbol, Tail state, Tail symbol, Tail Direction
-///         (1, 't', 2, 'n', Direction::Right),
-///         (2, 'e', 3, 'i', Direction::Right),
-///         (3, 's', 4, 'c', Direction::Right),
-///         (4, 't', 0, 'e', Direction::Center),
+///         // Head state, Head symbol, Tail state, Tail symbol, Tail Move
+///         (1, 't', 2, 'n', Move::Right),
+///         (2, 'e', 3, 'i', Move::Right),
+///         (3, 's', 4, 'c', Move::Right),
+///         (4, 't', 0, 'e', Move::None),
 ///         // Revers
-///         (1, 'n', 2, 't', Direction::Right),
-///         (2, 'i', 3, 'e', Direction::Right),
-///         (3, 'c', 4, 's', Direction::Right),
-///         (4, 'e', 0, 't', Direction::Center),
+///         (1, 'n', 2, 't', Move::Right),
+///         (2, 'i', 3, 'e', Move::Right),
+///         (3, 'c', 4, 's', Move::Right),
+///         (4, 'e', 0, 't', Move::None),
 ///     ]);
 ///     let machine = Classic::new(program, '_').unwrap();
 ///
@@ -66,7 +66,7 @@ pub trait TuringMachine<S: Symbol> {
     ///
     /// # Examples
     /// ```rust
-    /// use turing_machine_rs::instruction::Direction;
+    /// use turing_machine_rs::instruction::Move;
     /// use turing_machine_rs::machines::Classic;
     /// use turing_machine_rs::program::{Extend, Program};
     /// use turing_machine_rs::state::{Configuration, Tape};
@@ -75,12 +75,12 @@ pub trait TuringMachine<S: Symbol> {
     /// fn main() {
     ///     let mut program = Program::new(vec!['0', '1'], 3);
     ///     program.extend([
-    ///         (1, '0', 2, '0', Direction::Right),
-    ///         (1, '1', 1, '1', Direction::Left),
-    ///         (2, '0', 3, '1', Direction::Left),
-    ///         (2, '1', 2, '1', Direction::Right),
-    ///         (3, '0', 0, '0', Direction::Center),
-    ///         (3, '1', 3, '0', Direction::Left),
+    ///         (1, '0', 2, '0', Move::Right),
+    ///         (1, '1', 1, '1', Move::Left),
+    ///         (2, '0', 3, '1', Move::Left),
+    ///         (2, '1', 2, '1', Move::Right),
+    ///         (3, '0', 0, '0', Move::None),
+    ///         (3, '1', 3, '0', Move::Left),
     ///     ]);
     ///     let machine = Classic::new(program, '0').unwrap();
     ///

@@ -1,6 +1,6 @@
 use std::fmt::{Display, Error, Formatter};
 
-use crate::instruction::Direction;
+use crate::instruction::Move;
 use crate::Symbol;
 
 /// Tail is the second part of [`crate::instruction::Instruction`]
@@ -16,20 +16,20 @@ pub struct Tail<S: Symbol> {
     pub symbol: S,
     /// Direction enum variant (Left, Center, Right)
     /// which used by [`crate::state::Configuration`].
-    pub direction: Direction,
+    pub movement: Move,
 }
 
 impl<S: Symbol> Tail<S> {
     /// Constructs a new [`Tail`] with state, symbol and direction. Tail struct
     /// constructs immediatly that's why doesn't need to use type annotations.
     #[rustfmt::skip]
-    pub fn new(state: u32, symbol: S, direction: Direction) -> Self {
-        Tail { state, symbol, direction }
+    pub fn new(state: u32, symbol: S, movement: Move) -> Self {
+        Tail { state, symbol, movement }
     }
 }
 
 impl<S: Symbol> Display for Tail<S> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}, {}, {}", self.state, self.symbol, self.direction)
+        write!(f, "{}, {}, {}", self.state, self.symbol, self.movement)
     }
 }

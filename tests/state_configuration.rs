@@ -1,4 +1,4 @@
-use turing_machine_rs::instruction::Direction;
+use turing_machine_rs::instruction::Move;
 use turing_machine_rs::state::{Configuration, Tape};
 
 #[cfg(test)]
@@ -107,16 +107,16 @@ mod copy {
         let tape = Tape::from("test");
         let mut conf = Configuration::new_std(tape).unwrap();
 
-        conf.shift(Direction::Right, '!'); // test!
-                                           // ----^
-        conf.shift(Direction::Left, ' '); // test!
-                                          // ---^
-        conf.shift(Direction::Left, ' '); // test!
-                                          // --^
-        conf.shift(Direction::Left, ' '); // test!
-                                          // -^
-        conf.shift(Direction::Left, ' '); // test!
-                                          // ^
+        conf.shift(Move::Right, '!'); // test!
+                                      // ----^
+        conf.shift(Move::Left, ' '); // test!
+                                     // ---^
+        conf.shift(Move::Left, ' '); // test!
+                                     // --^
+        conf.shift(Move::Left, ' '); // test!
+                                     // -^
+        conf.shift(Move::Left, ' '); // test!
+                                     // ^
         conf.set_symbol('T');
 
         let expected = Configuration::new(Tape::from("Test!"), 0, 1).unwrap();
@@ -131,8 +131,8 @@ mod copy {
         assert_eq!(conf.len(), tape.len());
 
         let mut conf = conf.clone();
-        conf.shift(Direction::Right, '!'); // test!
-                                           // ----^
+        conf.shift(Move::Right, '!'); // test!
+                                      // ----^
         assert_eq!(conf.len(), tape.len() + 1);
     }
 
@@ -149,16 +149,16 @@ mod copy {
         conf.set_symbol('T');
         let _ = conf.get_symbol();
 
-        conf.shift(Direction::Right, ' '); // Test
-                                           // ^
-        conf.shift(Direction::Right, ' '); // Test
-                                           // -^
-        conf.shift(Direction::Right, ' '); // Test
-                                           // --^
-        conf.shift(Direction::Right, ' '); // Test
-                                           // ---^
-        conf.shift(Direction::Right, '!'); // Test!
-                                           // ----^
+        conf.shift(Move::Right, ' '); // Test
+                                      // ^
+        conf.shift(Move::Right, ' '); // Test
+                                      // -^
+        conf.shift(Move::Right, ' '); // Test
+                                      // --^
+        conf.shift(Move::Right, ' '); // Test
+                                      // ---^
+        conf.shift(Move::Right, '!'); // Test!
+                                      // ----^
         let _ = conf.len();
 
         assert_eq!(conf.state, 1);
@@ -278,16 +278,16 @@ mod clone {
         let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
         let mut conf = Configuration::new_std(tape).unwrap();
 
-        conf.shift(Direction::Right, Box::new('!')); // test!
-                                                     // ----^
-        conf.shift(Direction::Left, Box::new(' ')); // test!
-                                                    // ---^
-        conf.shift(Direction::Left, Box::new(' ')); // test!
-                                                    // --^
-        conf.shift(Direction::Left, Box::new(' ')); // test!
-                                                    // -^
-        conf.shift(Direction::Left, Box::new(' ')); // test!
-                                                    // ^
+        conf.shift(Move::Right, Box::new('!')); // test!
+                                                // ----^
+        conf.shift(Move::Left, Box::new(' ')); // test!
+                                               // ---^
+        conf.shift(Move::Left, Box::new(' ')); // test!
+                                               // --^
+        conf.shift(Move::Left, Box::new(' ')); // test!
+                                               // -^
+        conf.shift(Move::Left, Box::new(' ')); // test!
+                                               // ^
         conf.set_symbol(Box::new('T'));
 
         let expected =
@@ -303,8 +303,8 @@ mod clone {
         assert_eq!(conf.len(), tape.len());
 
         let mut conf = conf.clone();
-        conf.shift(Direction::Right, Box::new('!')); // test!
-                                                     // ----^
+        conf.shift(Move::Right, Box::new('!')); // test!
+                                                // ----^
         assert_eq!(conf.len(), tape.len() + 1);
     }
 
@@ -321,16 +321,16 @@ mod clone {
         conf.set_symbol(Box::new('T'));
         let _ = conf.get_symbol();
 
-        conf.shift(Direction::Right, Box::new(' ')); // Test
-                                                     // ^
-        conf.shift(Direction::Right, Box::new(' ')); // Test
-                                                     // -^
-        conf.shift(Direction::Right, Box::new(' ')); // Test
-                                                     // --^
-        conf.shift(Direction::Right, Box::new(' ')); // Test
-                                                     // ---^
-        conf.shift(Direction::Right, Box::new('!')); // Test!
-                                                     // ----^
+        conf.shift(Move::Right, Box::new(' ')); // Test
+                                                // ^
+        conf.shift(Move::Right, Box::new(' ')); // Test
+                                                // -^
+        conf.shift(Move::Right, Box::new(' ')); // Test
+                                                // --^
+        conf.shift(Move::Right, Box::new(' ')); // Test
+                                                // ---^
+        conf.shift(Move::Right, Box::new('!')); // Test!
+                                                // ----^
         let _ = conf.len();
 
         assert_eq!(conf.state, 1);

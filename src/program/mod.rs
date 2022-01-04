@@ -7,7 +7,7 @@
 use std::fmt::{Display, Error, Formatter};
 use std::mem::replace;
 
-use crate::instruction::{Direction, Head, Instruction, Tail};
+use crate::instruction::{Head, Instruction, Move, Tail};
 use crate::{Symbol, With};
 
 /// Program is a vector-based struct which is implementing minimal api
@@ -158,15 +158,15 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
 
 impl<S: Symbol, I> Extend<I> for Program<S>
 where
-    I: IntoIterator<Item = (u32, S, u32, S, Direction)>,
+    I: IntoIterator<Item = (u32, S, u32, S, Move)>,
 {
-    /// Extends the program by tuple `(u32, S, u32, S, Direction)` first two
+    /// Extends the program by tuple `(u32, S, u32, S, Move)` first two
     /// elements are going to [`Head`] and the last three are going to [`Tail`]
     fn extend(&mut self, iterable: I) -> Result<(), String> {
-        for (h_state, h_symbol, t_state, t_symbol, t_direction) in iterable {
+        for (h_state, h_symbol, t_state, t_symbol, t_movement) in iterable {
             self.insert(Instruction::new(
                 Head::new(h_state, h_symbol),
-                Tail::new(t_state, t_symbol, t_direction),
+                Tail::new(t_state, t_symbol, t_movement),
             ))?;
         }
         Ok(())
