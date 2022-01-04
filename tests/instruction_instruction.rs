@@ -5,11 +5,16 @@ mod copy {
     use super::*;
 
     #[test]
-    fn creation() {
+    fn new() {
         let _ = Instruction::new(
             Head::new(State(1), 'c'),
             Tail::new(State(0), 'b', Move::Right),
         );
+    }
+
+    #[test]
+    fn build() {
+        let _ = Instruction::build(State(1), 'c', State(0), 'b', Move::Right);
     }
 
     #[test]
@@ -18,10 +23,7 @@ mod copy {
             Head::new(State(1), 'c'),
             Tail::new(State(0), 'b', Move::Right),
         );
-        let rhs = Instruction::new(
-            Head::new(State(1), 'c'),
-            Tail::new(State(0), 'b', Move::Right),
-        );
+        let rhs = Instruction::build(State(1), 'c', State(0), 'b', Move::Right);
 
         assert_eq!(lhs, rhs);
     }
@@ -40,14 +42,28 @@ mod clone {
     }
 
     #[test]
+    fn build() {
+        let _ = Instruction::build(
+            State(1),
+            Box::new('c'),
+            State(0),
+            Box::new('b'),
+            Move::Right,
+        );
+    }
+
+    #[test]
     fn equality() {
         let lhs = Instruction::new(
             Head::new(State(1), Box::new('c')),
             Tail::new(State(0), Box::new('b'), Move::Right),
         );
-        let rhs = Instruction::new(
-            Head::new(State(1), Box::new('c')),
-            Tail::new(State(0), Box::new('b'), Move::Right),
+        let rhs = Instruction::build(
+            State(1),
+            Box::new('c'),
+            State(0),
+            Box::new('b'),
+            Move::Right,
         );
 
         assert_eq!(lhs, rhs);
