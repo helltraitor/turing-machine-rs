@@ -52,7 +52,7 @@ use crate::Symbol;
 pub trait TuringMachine<S: Symbol> {
     /// Executes the [`crate::program::Program`] and returns a mutated [`Configuration`]
     /// using the [`TuringMachine::execute_until`] method with the `conf.state == 0`
-    /// predicate. This is the most commonly used method for [`Program`] execution.
+    /// predicate. This is the most commonly used method for [`crate::program::Program`] execution.
     fn execute(&self, conf: Configuration<S>) -> Result<Configuration<S>, String> {
         self.execute_until(conf, |conf| conf.state == State(0))
     }

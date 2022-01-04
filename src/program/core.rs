@@ -67,7 +67,9 @@ impl<S: Symbol> Program<S> {
         Program { alphabet, container, l_state }
     }
 
-    /// Returns an [`Vec`] alphabet reference. Zero cost.
+    /// Returns an [`Vec`] alphabet reference.
+    ///
+    /// Zero cost method.
     pub fn alphabet(&self) -> &Vec<S> {
         &self.alphabet
     }
@@ -99,7 +101,7 @@ impl<S: Symbol> Program<S> {
     ///
     /// Returns [`Err(String)`] when [`Head`] [`State`] equals to `0`,
     /// [`Head`] or [`Tail`] symbols are not in the [`Program`] alphabet
-    /// or the [`Program`] last state is less then [`Head`] or [`Tail`] states.
+    /// or the [`Program`] last state is less then [`Head`] or [`crate::instruction::Tail`] states.
     ///
     /// Otherwise returns another [`Ok(Some(Instruction))`] when the [`Head`]
     /// already is in the [`Program`] and set inserting [`Instruction`]
@@ -144,13 +146,14 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
     type Output = Result<Program<S>, String>;
 
     /// Returns a new [`Program`] by merging this program with another according to these rules:
-    /// 1. All [`Tail`] parts of [`Instruction`]s for this [`Program`] will changes
-    ///     their [`State`]s to `self.l_state` if [`Tail`] [`State`] equals to `0`.
+    /// 1. All [`crate::instruction::Tail`] parts of [`Instruction`]s for this [`Program`]
+    ///     will changes their [`State`]s to `self.l_state` if [`crate::instruction::Tail`]
+    ///     [`State`] equals to `0`.
     /// 2. All [`Head`] parts of [`Instruction`]s for another [`Program`] will
     ///     increase (or shift) their [`State`]s by `self.l_state`.
-    /// 3. All [`Tail`] parts of [`Instruction`]s for another program will also
-    ///     increase (or shift) by `self.l_state` but only if [`Tail`] [`State`]
-    ///     not equals to `0`.
+    /// 3. All [`crate::instruction::Tail`] parts of [`Instruction`]s
+    ///     for another program will also increase (or shift) by `self.l_state`
+    ///     but only if [`crate::instruction::Tail`] [`State`] not equals to `0`.
     /// 4. A new [`Program`] `l_state` is set to `self.l_state + other.l_state`.
     fn with(&self, other: &Program<S>) -> Result<Program<S>, String> {
         if self.alphabet != other.alphabet {
