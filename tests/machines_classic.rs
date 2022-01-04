@@ -1,4 +1,4 @@
-use turing_machine_rs::instruction::{Head, Instruction, Move, Tail};
+use turing_machine_rs::instruction::{Head, Instruction, Move, State, Tail};
 use turing_machine_rs::machines::Classic;
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
@@ -10,14 +10,14 @@ mod copy {
 
     #[test]
     fn success_creation() {
-        let program = Program::new(vec![' '], 1);
+        let program = Program::new(vec![' '], State(1));
         let _ = Classic::new(program, ' ').unwrap();
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
-        let program = Program::new(vec![' '], 1);
+        let program = Program::new(vec![' '], State(1));
         let _ = Classic::new(program, '_').unwrap();
     }
 }
@@ -28,14 +28,14 @@ mod clone {
 
     #[test]
     fn success_creation() {
-        let program = Program::new(vec![Box::new(' ')], 1);
+        let program = Program::new(vec![Box::new(' ')], State(1));
         let _ = Classic::new(program, Box::new(' ')).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
-        let program = Program::new(vec![Box::new(' ')], 1);
+        let program = Program::new(vec![Box::new(' ')], State(1));
         let _ = Classic::new(program, Box::new('_')).unwrap();
     }
 }
@@ -45,7 +45,7 @@ mod copy_turing_machine {
     use super::*;
 
     fn new_fail_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 3);
+        let mut program = Program::new(vec!['0', '1'], State(3));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (1, '1', 1, '1', Move::Left),
@@ -57,7 +57,7 @@ mod copy_turing_machine {
     }
 
     fn new_success_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 3);
+        let mut program = Program::new(vec!['0', '1'], State(3));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (1, '1', 1, '1', Move::Left),
@@ -72,7 +72,7 @@ mod copy_turing_machine {
 
     #[test]
     fn execute() {
-        let mut program = Program::new(vec![' ', '0', '1'], 2);
+        let mut program = Program::new(vec![' ', '0', '1'], State(2));
         program.extend([
             (1, ' ', 2, ' ', Move::Right),
             (1, '0', 1, '1', Move::Left),
@@ -83,7 +83,7 @@ mod copy_turing_machine {
         ]);
         let machine = Classic::new(program, ' ').unwrap();
 
-        let conf = Configuration::new(Tape::from("001100"), 5, 0).unwrap();
+        let conf = Configuration::new(Tape::from("001100"), 5, State(0)).unwrap();
         let result = machine.execute(conf.clone()).unwrap();
 
         let expected = conf;
@@ -93,17 +93,17 @@ mod copy_turing_machine {
         let conf = Configuration::new_std(Tape::from("001100")).unwrap();
         let result = machine.execute(conf).unwrap();
 
-        let expected = Configuration::new(Tape::from(" 110011 "), 6, 0).unwrap();
+        let expected = Configuration::new(Tape::from(" 110011 "), 6, State(0)).unwrap();
 
         assert_eq!(expected, result);
     }
 
     #[test]
     fn success_execute_once() {
-        let mut program = Program::new(vec![' ', '1'], 1);
+        let mut program = Program::new(vec![' ', '1'], State(1));
         let _ = program.insert(Instruction::new(
-            Head::new(1, '1'),
-            Tail::new(1, '1', Move::Right),
+            Head::new(State(1), '1'),
+            Tail::new(State(1), '1', Move::Right),
         ));
 
         let machine = Classic::new(program, ' ').unwrap();
@@ -111,7 +111,7 @@ mod copy_turing_machine {
         let conf = Configuration::new_std(Tape::from("1")).unwrap();
         let result = machine.execute_once(conf).unwrap();
 
-        let expected = Configuration::new(Tape::from("1 "), 1, 1).unwrap();
+        let expected = Configuration::new(Tape::from("1 "), 1, State(1)).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -119,10 +119,10 @@ mod copy_turing_machine {
     #[test]
     #[should_panic]
     fn fail_execute_once() {
-        let mut program = Program::new(vec![' ', '1'], 1);
+        let mut program = Program::new(vec![' ', '1'], State(1));
         let _ = program.insert(Instruction::new(
-            Head::new(1, '1'),
-            Tail::new(1, '1', Move::Right),
+            Head::new(State(1), '1'),
+            Tail::new(State(1), '1', Move::Right),
         ));
 
         let machine = Classic::new(program, ' ').unwrap();
@@ -136,9 +136,11 @@ mod copy_turing_machine {
         let machine = new_success_machine();
 
         let conf = Configuration::new_std(Tape::from("010")).unwrap();
-        let result = machine.execute_until(conf, |conf| conf.state == 3).unwrap();
+        let result = machine
+            .execute_until(conf, |conf| conf.state == State(3))
+            .unwrap();
 
-        let expected = Configuration::new(Tape::from("0101"), 2, 3).unwrap();
+        let expected = Configuration::new(Tape::from("0101"), 2, State(3)).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -149,7 +151,9 @@ mod copy_turing_machine {
         let machine = new_fail_machine();
 
         let conf = Configuration::new_std(Tape::from("010")).unwrap();
-        let _ = machine.execute_until(conf, |conf| conf.state == 3).unwrap();
+        let _ = machine
+            .execute_until(conf, |conf| conf.state == State(3))
+            .unwrap();
     }
 
     #[test]
@@ -176,7 +180,7 @@ mod clone_turing_machine {
     use super::*;
 
     fn new_fail_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (1, Box::new('1'), 1, Box::new('1'), Move::Left),
@@ -188,7 +192,7 @@ mod clone_turing_machine {
     }
 
     fn new_success_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (1, Box::new('1'), 1, Box::new('1'), Move::Left),
@@ -203,7 +207,7 @@ mod clone_turing_machine {
 
     #[test]
     fn execute() {
-        let mut program = Program::new(vec![Box::new(' '), Box::new('0'), Box::new('1')], 2);
+        let mut program = Program::new(vec![Box::new(' '), Box::new('0'), Box::new('1')], State(2));
         program.extend([
             (1, Box::new(' '), 2, Box::new(' '), Move::Right),
             (1, Box::new('0'), 1, Box::new('1'), Move::Left),
@@ -214,8 +218,12 @@ mod clone_turing_machine {
         ]);
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
-        let conf =
-            Configuration::new(Tape::new("001100".chars().map(|ch| Box::new(ch))), 5, 0).unwrap();
+        let conf = Configuration::new(
+            Tape::new("001100".chars().map(|ch| Box::new(ch))),
+            5,
+            State(0),
+        )
+        .unwrap();
         let result = machine.execute(conf.clone()).unwrap();
 
         let expected = conf;
@@ -226,18 +234,22 @@ mod clone_turing_machine {
             Configuration::new_std(Tape::new("001100".chars().map(|ch| Box::new(ch)))).unwrap();
         let result = machine.execute(conf).unwrap();
 
-        let expected =
-            Configuration::new(Tape::new(" 110011 ".chars().map(|ch| Box::new(ch))), 6, 0).unwrap();
+        let expected = Configuration::new(
+            Tape::new(" 110011 ".chars().map(|ch| Box::new(ch))),
+            6,
+            State(0),
+        )
+        .unwrap();
 
         assert_eq!(expected, result);
     }
 
     #[test]
     fn success_execute_once() {
-        let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
+        let mut program = Program::new(vec![Box::new(' '), Box::new('1')], State(1));
         let _ = program.insert(Instruction::new(
-            Head::new(1, Box::new('1')),
-            Tail::new(1, Box::new('1'), Move::Right),
+            Head::new(State(1), Box::new('1')),
+            Tail::new(State(1), Box::new('1'), Move::Right),
         ));
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
@@ -245,7 +257,8 @@ mod clone_turing_machine {
         let conf = Configuration::new_std(Tape::new([Box::new('1')])).unwrap();
         let result = machine.execute_once(conf).unwrap();
 
-        let expected = Configuration::new(Tape::new([Box::new('1'), Box::new(' ')]), 1, 1).unwrap();
+        let expected =
+            Configuration::new(Tape::new([Box::new('1'), Box::new(' ')]), 1, State(1)).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -253,10 +266,10 @@ mod clone_turing_machine {
     #[test]
     #[should_panic]
     fn fail_execute_once() {
-        let mut program = Program::new(vec![Box::new(' '), Box::new('1')], 1);
+        let mut program = Program::new(vec![Box::new(' '), Box::new('1')], State(1));
         let _ = program.insert(Instruction::new(
-            Head::new(1, Box::new('1')),
-            Tail::new(1, Box::new('1'), Move::Right),
+            Head::new(State(1), Box::new('1')),
+            Tail::new(State(1), Box::new('1'), Move::Right),
         ));
 
         let machine = Classic::new(program, Box::new(' ')).unwrap();
@@ -270,10 +283,16 @@ mod clone_turing_machine {
         let machine = new_success_machine();
 
         let conf = Configuration::new_std(Tape::new("010".chars().map(|ch| Box::new(ch)))).unwrap();
-        let result = machine.execute_until(conf, |conf| conf.state == 3).unwrap();
+        let result = machine
+            .execute_until(conf, |conf| conf.state == State(3))
+            .unwrap();
 
-        let expected =
-            Configuration::new(Tape::new("0101".chars().map(|ch| Box::new(ch))), 2, 3).unwrap();
+        let expected = Configuration::new(
+            Tape::new("0101".chars().map(|ch| Box::new(ch))),
+            2,
+            State(3),
+        )
+        .unwrap();
 
         assert_eq!(expected, result);
     }
@@ -284,7 +303,9 @@ mod clone_turing_machine {
         let machine = new_fail_machine();
 
         let conf = Configuration::new_std(Tape::new("010".chars().map(|ch| Box::new(ch)))).unwrap();
-        let _ = machine.execute_until(conf, |conf| conf.state == 3).unwrap();
+        let _ = machine
+            .execute_until(conf, |conf| conf.state == State(3))
+            .unwrap();
     }
 
     #[test]
@@ -315,7 +336,7 @@ mod copy_with_for_classic {
     use super::*;
 
     fn new_zerofy_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 4);
+        let mut program = Program::new(vec!['0', '1'], State(4));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (2, '0', 3, '0', Move::Left),
@@ -328,7 +349,7 @@ mod copy_with_for_classic {
     }
 
     fn new_left_shift_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 2);
+        let mut program = Program::new(vec!['0', '1'], State(2));
         program.extend([
             (1, '0', 2, '0', Move::Left),
             (2, '0', 0, '0', Move::None),
@@ -338,7 +359,7 @@ mod copy_with_for_classic {
     }
 
     fn new_right_shift_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 2);
+        let mut program = Program::new(vec!['0', '1'], State(2));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (2, '0', 0, '0', Move::None),
@@ -348,7 +369,7 @@ mod copy_with_for_classic {
     }
 
     fn new_trans_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 19);
+        let mut program = Program::new(vec!['0', '1'], State(19));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (2, '0', 3, '0', Move::None),
@@ -418,8 +439,8 @@ mod copy_with_for_classic {
     #[test]
     #[should_panic]
     fn self_with_other_fail() {
-        let zero_one = Classic::new(Program::new(vec!['0', '1'], 2), '0').unwrap();
-        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0').unwrap();
+        let zero_one = Classic::new(Program::new(vec!['0', '1'], State(2)), '0').unwrap();
+        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], State(2)), '0').unwrap();
 
         zero_one.with(&zero_one_two).unwrap();
     }
@@ -459,8 +480,8 @@ mod copy_with_for_classic {
     #[test]
     #[should_panic]
     fn option_with_other_fail() {
-        let zero_one = Classic::new(Program::new(vec!['0', '1'], 2), '0');
-        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], 2), '0').unwrap();
+        let zero_one = Classic::new(Program::new(vec!['0', '1'], State(2)), '0');
+        let zero_one_two = Classic::new(Program::new(vec!['0', '1', '2'], State(2)), '0').unwrap();
 
         zero_one.with(&zero_one_two).unwrap();
     }
@@ -471,7 +492,7 @@ mod clone_with_for_classic {
     use super::*;
 
     fn new_zerofy_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(4));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (2, Box::new('0'), 3, Box::new('0'), Move::Left),
@@ -484,7 +505,7 @@ mod clone_with_for_classic {
     }
 
     fn new_left_shift_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(2));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Left),
             (2, Box::new('0'), 0, Box::new('0'), Move::None),
@@ -494,7 +515,7 @@ mod clone_with_for_classic {
     }
 
     fn new_right_shift_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(2));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (2, Box::new('0'), 0, Box::new('0'), Move::None),
@@ -504,7 +525,7 @@ mod clone_with_for_classic {
     }
 
     fn new_trans_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 19);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(19));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (2, Box::new('0'), 3, Box::new('0'), Move::None),
@@ -575,12 +596,12 @@ mod clone_with_for_classic {
     #[should_panic]
     fn self_with_other_fail() {
         let zero_one = Classic::new(
-            Program::new(vec![Box::new('0'), Box::new('1')], 2),
+            Program::new(vec![Box::new('0'), Box::new('1')], State(2)),
             Box::new('0'),
         )
         .unwrap();
         let zero_one_two = Classic::new(
-            Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], 2),
+            Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], State(2)),
             Box::new('0'),
         )
         .unwrap();
@@ -624,11 +645,11 @@ mod clone_with_for_classic {
     #[should_panic]
     fn option_with_other_fail() {
         let zero_one = Classic::new(
-            Program::new(vec![Box::new('0'), Box::new('1')], 2),
+            Program::new(vec![Box::new('0'), Box::new('1')], State(2)),
             Box::new('0'),
         );
         let zero_one_two = Classic::new(
-            Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], 2),
+            Program::new(vec![Box::new('0'), Box::new('1'), Box::new('2')], State(2)),
             Box::new('0'),
         )
         .unwrap();

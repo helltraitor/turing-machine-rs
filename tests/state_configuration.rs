@@ -1,4 +1,4 @@
-use turing_machine_rs::instruction::Move;
+use turing_machine_rs::instruction::{Move, State};
 use turing_machine_rs::state::{Configuration, Tape};
 
 #[cfg(test)]
@@ -8,42 +8,42 @@ mod copy {
     #[test]
     fn success_creation() {
         let tape = Tape::from("test");
-        let _ = Configuration::new(tape, 0, 1).unwrap();
+        let _ = Configuration::new(tape, 0, State(1)).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
         let tape = Tape::from("test");
-        let _ = Configuration::new(tape, 5, 1).unwrap();
+        let _ = Configuration::new(tape, 5, State(1)).unwrap();
     }
 
     #[test]
     fn destruction() {
-        let conf = Configuration::new(Tape::from("_"), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::from("_"), 0, State(1)).unwrap();
         let items = conf.destruct();
 
-        assert_eq!((Tape::from("_"), 0, 1), items);
+        assert_eq!((Tape::from("_"), 0, State(1)), items);
     }
 
     #[test]
     fn index() {
-        let conf = Configuration::new(Tape::from("test"), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::from("test"), 0, State(1)).unwrap();
         assert_eq!(conf.index(), 0);
 
-        let conf = Configuration::new(Tape::from("test"), 1, 1).unwrap();
+        let conf = Configuration::new(Tape::from("test"), 1, State(1)).unwrap();
         assert_eq!(conf.index(), 1);
     }
 
     #[test]
     fn is_empty() {
-        let conf = Configuration::new(Tape::from("_"), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::from("_"), 0, State(1)).unwrap();
         assert!(!conf.is_empty());
     }
 
     #[test]
     fn into_tape() {
-        let conf = Configuration::new(Tape::from("_"), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::from("_"), 0, State(1)).unwrap();
         assert_eq!(conf.into_tape(), Tape::from("_"));
     }
 
@@ -51,7 +51,7 @@ mod copy {
     fn nrm_creation() {
         let conf = Configuration::new_nrm(Tape::from("test")).unwrap();
 
-        let expected = Configuration::new(Tape::from("test"), 0, 1).unwrap();
+        let expected = Configuration::new(Tape::from("test"), 0, State(1)).unwrap();
 
         assert_eq!(expected, conf);
     }
@@ -59,7 +59,7 @@ mod copy {
     #[test]
     fn std_creation() {
         let conf = Configuration::new_std(Tape::from("test")).unwrap();
-        let expected = Configuration::new(Tape::from("test"), 3, 1).unwrap();
+        let expected = Configuration::new(Tape::from("test"), 3, State(1)).unwrap();
 
         assert_eq!(expected, conf);
     }
@@ -69,11 +69,11 @@ mod copy {
         let tape = Tape::from("test");
 
         let lhs = Configuration::new_nrm(tape.clone()).unwrap();
-        let rhs = Configuration::new(tape.clone(), 0, 1).unwrap();
+        let rhs = Configuration::new(tape.clone(), 0, State(1)).unwrap();
         assert_eq!(lhs, rhs);
 
         let lhs = Configuration::new_std(tape.clone()).unwrap();
-        let rhs = Configuration::new(tape.clone(), tape.len() - 1, 1).unwrap();
+        let rhs = Configuration::new(tape.clone(), tape.len() - 1, State(1)).unwrap();
         assert_eq!(lhs, rhs);
     }
 
@@ -87,10 +87,10 @@ mod copy {
 
     #[test]
     fn set_symbol() {
-        let mut conf = Configuration::new(Tape::from("test"), 0, 1).unwrap();
+        let mut conf = Configuration::new(Tape::from("test"), 0, State(1)).unwrap();
         conf.set_symbol('T');
 
-        let expected = Configuration::new(Tape::from("Test"), 0, 1).unwrap();
+        let expected = Configuration::new(Tape::from("Test"), 0, State(1)).unwrap();
 
         assert_eq!(expected, conf);
     }
@@ -119,7 +119,7 @@ mod copy {
                                      // ^
         conf.set_symbol('T');
 
-        let expected = Configuration::new(Tape::from("Test!"), 0, 1).unwrap();
+        let expected = Configuration::new(Tape::from("Test!"), 0, State(1)).unwrap();
         assert_eq!(expected, conf);
     }
 
@@ -142,7 +142,7 @@ mod copy {
         // It must be changed only by outside
 
         let tape = Tape::from("test");
-        let mut conf = Configuration::new(tape, 0, 1).unwrap();
+        let mut conf = Configuration::new(tape, 0, State(1)).unwrap();
 
         let _ = conf.index();
         let _ = conf.tape();
@@ -161,7 +161,7 @@ mod copy {
                                       // ----^
         let _ = conf.len();
 
-        assert_eq!(conf.state, 1);
+        assert_eq!(conf.state, State(1));
     }
 }
 
@@ -172,44 +172,52 @@ mod clone {
     #[test]
     fn success_creation() {
         let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
-        let _ = Configuration::new(tape, 0, 1);
+        let _ = Configuration::new(tape, 0, State(1));
     }
 
     #[test]
     #[should_panic]
     fn fail_creation() {
         let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
-        let _ = Configuration::new(tape, 5, 1).unwrap();
+        let _ = Configuration::new(tape, 5, State(1)).unwrap();
     }
 
     #[test]
     fn destruction() {
-        let conf = Configuration::new(Tape::new([Box::new("_")]), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::new([Box::new("_")]), 0, State(1)).unwrap();
         let items = conf.destruct();
 
-        assert_eq!((Tape::new([Box::new("_")]), 0, 1), items);
+        assert_eq!((Tape::new([Box::new("_")]), 0, State(1)), items);
     }
 
     #[test]
     fn index() {
-        let conf =
-            Configuration::new(Tape::new("test".chars().map(|ch| Box::new(ch))), 0, 1).unwrap();
+        let conf = Configuration::new(
+            Tape::new("test".chars().map(|ch| Box::new(ch))),
+            0,
+            State(1),
+        )
+        .unwrap();
         assert_eq!(conf.index(), 0);
 
-        let conf =
-            Configuration::new(Tape::new("test".chars().map(|ch| Box::new(ch))), 1, 1).unwrap();
+        let conf = Configuration::new(
+            Tape::new("test".chars().map(|ch| Box::new(ch))),
+            1,
+            State(1),
+        )
+        .unwrap();
         assert_eq!(conf.index(), 1);
     }
 
     #[test]
     fn is_empty() {
-        let conf = Configuration::new(Tape::new([Box::new('_')]), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::new([Box::new('_')]), 0, State(1)).unwrap();
         assert!(!conf.is_empty());
     }
 
     #[test]
     fn into_tape() {
-        let conf = Configuration::new(Tape::new([Box::new('_')]), 0, 1).unwrap();
+        let conf = Configuration::new(Tape::new([Box::new('_')]), 0, State(1)).unwrap();
         assert_eq!(conf.into_tape(), Tape::new([Box::new('_')]));
     }
 
@@ -218,8 +226,12 @@ mod clone {
         let conf =
             Configuration::new_nrm(Tape::new("test".chars().map(|ch| Box::new(ch)))).unwrap();
 
-        let expected =
-            Configuration::new(Tape::new("test".chars().map(|ch| Box::new(ch))), 0, 1).unwrap();
+        let expected = Configuration::new(
+            Tape::new("test".chars().map(|ch| Box::new(ch))),
+            0,
+            State(1),
+        )
+        .unwrap();
 
         assert_eq!(expected, conf);
     }
@@ -227,7 +239,11 @@ mod clone {
     #[test]
     fn std_creation() {
         let conf = Configuration::new_std(Tape::new("test".chars().map(|ch| Box::new(ch))));
-        let expected = Configuration::new(Tape::new("test".chars().map(|ch| Box::new(ch))), 3, 1);
+        let expected = Configuration::new(
+            Tape::new("test".chars().map(|ch| Box::new(ch))),
+            3,
+            State(1),
+        );
 
         assert_eq!(expected, conf);
     }
@@ -237,11 +253,11 @@ mod clone {
         let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
 
         let lhs = Configuration::new_nrm(tape.clone()).unwrap();
-        let rhs = Configuration::new(tape.clone(), 0, 1).unwrap();
+        let rhs = Configuration::new(tape.clone(), 0, State(1)).unwrap();
         assert_eq!(lhs, rhs);
 
         let lhs = Configuration::new_std(tape.clone()).unwrap();
-        let rhs = Configuration::new(tape.clone(), tape.len() - 1, 1).unwrap();
+        let rhs = Configuration::new(tape.clone(), tape.len() - 1, State(1)).unwrap();
         assert_eq!(lhs, rhs);
     }
 
@@ -255,12 +271,20 @@ mod clone {
 
     #[test]
     fn set_symbol() {
-        let mut conf =
-            Configuration::new(Tape::new("test".chars().map(|ch| Box::new(ch))), 0, 1).unwrap();
+        let mut conf = Configuration::new(
+            Tape::new("test".chars().map(|ch| Box::new(ch))),
+            0,
+            State(1),
+        )
+        .unwrap();
         conf.set_symbol(Box::new('T'));
 
-        let expected =
-            Configuration::new(Tape::new("Test".chars().map(|ch| Box::new(ch))), 0, 1).unwrap();
+        let expected = Configuration::new(
+            Tape::new("Test".chars().map(|ch| Box::new(ch))),
+            0,
+            State(1),
+        )
+        .unwrap();
 
         assert_eq!(expected, conf);
     }
@@ -290,8 +314,12 @@ mod clone {
                                                // ^
         conf.set_symbol(Box::new('T'));
 
-        let expected =
-            Configuration::new(Tape::new("Test!".chars().map(|ch| Box::new(ch))), 0, 1).unwrap();
+        let expected = Configuration::new(
+            Tape::new("Test!".chars().map(|ch| Box::new(ch))),
+            0,
+            State(1),
+        )
+        .unwrap();
         assert_eq!(expected, conf);
     }
 
@@ -314,7 +342,7 @@ mod clone {
         // It must be changed only by outside
 
         let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
-        let mut conf = Configuration::new(tape, 0, 1).unwrap();
+        let mut conf = Configuration::new(tape, 0, State(1)).unwrap();
 
         let _ = conf.index();
         let _ = conf.tape();
@@ -333,6 +361,6 @@ mod clone {
                                                 // ----^
         let _ = conf.len();
 
-        assert_eq!(conf.state, 1);
+        assert_eq!(conf.state, State(1));
     }
 }

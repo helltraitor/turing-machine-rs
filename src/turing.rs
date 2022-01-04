@@ -1,3 +1,4 @@
+use crate::instruction::State;
 use crate::state::{Configuration, Tape};
 use crate::Symbol;
 
@@ -14,14 +15,14 @@ use crate::Symbol;
 /// ```rust
 /// extern crate turing_machine_rs;
 ///
-/// use turing_machine_rs::instruction::Move;
+/// use turing_machine_rs::instruction::{Move, State};
 /// use turing_machine_rs::machines::Classic;
 /// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::Tape;
 /// use turing_machine_rs::TuringMachine;
 ///
 /// fn main() {
-///     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
+///     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], State(4));
 ///     // Trait for more comfortable coding
 ///     program.extend([
 ///         // Instruction consists of Head and Tail parts
@@ -52,7 +53,7 @@ pub trait TuringMachine<S: Symbol> {
     /// [`TuringMachine::execute_until`] method with `conf.state == 0`
     /// predicate. This is the most common use method for program execution.
     fn execute(&self, conf: Configuration<S>) -> Result<Configuration<S>, String> {
-        self.execute_until(conf, |conf| conf.state == 0)
+        self.execute_until(conf, |conf| conf.state == State(0))
     }
 
     /// Turing machine msut have ability to execute program and change
@@ -66,14 +67,14 @@ pub trait TuringMachine<S: Symbol> {
     ///
     /// # Examples
     /// ```rust
-    /// use turing_machine_rs::instruction::Move;
+    /// use turing_machine_rs::instruction::{Move, State};
     /// use turing_machine_rs::machines::Classic;
     /// use turing_machine_rs::program::{Extend, Program};
     /// use turing_machine_rs::state::{Configuration, Tape};
     /// use turing_machine_rs::TuringMachine;
     ///
     /// fn main() {
-    ///     let mut program = Program::new(vec!['0', '1'], 3);
+    ///     let mut program = Program::new(vec!['0', '1'], State(3));
     ///     program.extend([
     ///         (1, '0', 2, '0', Move::Right),
     ///         (1, '1', 1, '1', Move::Left),
@@ -85,9 +86,9 @@ pub trait TuringMachine<S: Symbol> {
     ///     let machine = Classic::new(program, '0').unwrap();
     ///
     ///     let conf = Configuration::new_std(Tape::from("010")).unwrap();
-    ///     let result = machine.execute_until(conf, |conf| conf.state == 3).unwrap();
+    ///     let result = machine.execute_until(conf, |conf| conf.state == State(3)).unwrap();
     ///
-    ///     let expected = Configuration::new(Tape::from("0101"), 2, 3).unwrap();
+    ///     let expected = Configuration::new(Tape::from("0101"), 2, State(3)).unwrap();
     ///     assert_eq!(expected, result);
     /// }
     /// ```

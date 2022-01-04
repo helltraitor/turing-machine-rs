@@ -19,13 +19,13 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// use std::rc::Rc;
 ///
 /// use turing_machine_rs::TuringMachine;
-/// use turing_machine_rs::instruction::Move;
+/// use turing_machine_rs::instruction::{Move, State};
 /// use turing_machine_rs::machines::{Debugger, Classic};
 /// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::{Configuration, Tape};
 ///
 /// fn main() {
-///     let mut program = Program::new(vec![' '], 1);
+///     let mut program = Program::new(vec![' '], State(1));
 ///     program.extend([(1, ' ', 1, ' ', Move::Right)]);
 ///     let machine = Classic::new(program, ' ').unwrap();
 ///

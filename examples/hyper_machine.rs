@@ -1,6 +1,6 @@
 extern crate turing_machine_rs;
 
-use turing_machine_rs::instruction::Move;
+use turing_machine_rs::instruction::{Move, State};
 use turing_machine_rs::machines::Classic;
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
@@ -25,7 +25,7 @@ fn main() -> Result<(), String> {
             r_shift.clone(),
             trans.clone(),
         ],
-        9,
+        State(9),
     );
     // This is simplest implementation of `change choose second to choose third` machine
     program.extend([
@@ -82,7 +82,7 @@ fn main() -> Result<(), String> {
     let mut conf = Configuration::new_nrm(tape.clone())?;
     for machine in result_choose_third.as_vec() {
         conf = machine.execute(conf).unwrap();
-        conf.state = 1
+        conf.state = State(1)
     }
     println!(
         "Choose third machine translate {} into {}",
@@ -98,7 +98,7 @@ mod nrm_machines {
     use super::*;
 
     pub fn new_stand_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 1);
+        let mut program = Program::new(vec!['0', '1'], State(1));
         program
             .extend([(1, '0', 0, '0', Move::None), (1, '1', 0, '1', Move::None)])
             .unwrap();
@@ -106,7 +106,7 @@ mod nrm_machines {
     }
 
     pub fn new_zerofy_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 4);
+        let mut program = Program::new(vec!['0', '1'], State(4));
         program
             .extend([
                 (1, '0', 2, '0', Move::Right),
@@ -121,7 +121,7 @@ mod nrm_machines {
     }
 
     pub fn new_left_shift_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 2);
+        let mut program = Program::new(vec!['0', '1'], State(2));
         program
             .extend([
                 (1, '0', 2, '0', Move::Left),
@@ -133,7 +133,7 @@ mod nrm_machines {
     }
 
     pub fn new_right_shift_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 2);
+        let mut program = Program::new(vec!['0', '1'], State(2));
         program
             .extend([
                 (1, '0', 2, '0', Move::Right),
@@ -145,7 +145,7 @@ mod nrm_machines {
     }
 
     pub fn new_trans_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 19);
+        let mut program = Program::new(vec!['0', '1'], State(19));
         program
             .extend([
                 (1, '0', 2, '0', Move::Right),

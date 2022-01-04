@@ -10,10 +10,12 @@
 
 mod head;
 mod movement;
+mod state;
 mod tail;
 
 pub use head::Head;
 pub use movement::Move;
+pub use state::State;
 pub use tail::Tail;
 
 use std::fmt::{Display, Error, Formatter};

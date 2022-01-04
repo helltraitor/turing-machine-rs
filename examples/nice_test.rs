@@ -1,6 +1,6 @@
 extern crate turing_machine_rs;
 
-use turing_machine_rs::instruction::Move;
+use turing_machine_rs::instruction::{Move, State};
 use turing_machine_rs::machines::Classic;
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::Tape;
@@ -9,7 +9,7 @@ use turing_machine_rs::TuringMachine;
 // For more comfortable coding, use Result<(), String>:
 // `?` postfix symbol is better then `.unwrap()` postfix method call.
 fn main() -> Result<(), String> {
-    let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
+    let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], State(4));
     program.extend([
         (1, 't', 2, 'n', Move::Right),
         (2, 'e', 3, 'i', Move::Right),

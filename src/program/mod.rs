@@ -7,7 +7,7 @@
 use std::fmt::{Display, Error, Formatter};
 use std::mem::replace;
 
-use crate::instruction::{Head, Instruction, Move, Tail};
+use crate::instruction::{Head, Instruction, Move, State, Tail};
 use crate::{Symbol, With};
 
 /// Program is a vector-based struct which is implementing minimal api
@@ -21,15 +21,15 @@ use crate::{Symbol, With};
 pub struct Program<S: Symbol> {
     container: Vec<Instruction<S>>,
     alphabet: Vec<S>,
-    l_state: u32,
+    l_state: State,
 }
 
 impl<S: Symbol> Program<S> {
     /// Constructs a new [`Program`] from vector [`Vec<S>`] and last state
     /// [`u32`].
     #[rustfmt::skip]
-    pub fn new(alphabet: Vec<S>, l_state: u32) -> Self {
-        let capacity = alphabet.len() * (l_state as usize);
+    pub fn new(alphabet: Vec<S>, l_state: State) -> Self {
+        let capacity = alphabet.len() * l_state.0;
         let container = Vec::with_capacity(capacity);
         Program { alphabet, container, l_state }
     }
@@ -56,7 +56,7 @@ impl<S: Symbol> Program<S> {
     }
 
     /// Returns the program last state.
-    pub fn l_state(&self) -> u32 {
+    pub fn l_state(&self) -> State {
         self.l_state
     }
 
@@ -71,7 +71,7 @@ impl<S: Symbol> Program<S> {
     ///
     /// The [`Option`] is very useful in the collision check.
     pub fn insert(&mut self, inst: Instruction<S>) -> Result<Option<Instruction<S>>, String> {
-        if inst.head.state == 0 {
+        if inst.head.state == State(0) {
             return Err(format!(
                 "set error: instruction {} cannot have 0 state in head",
                 inst
@@ -132,9 +132,9 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
         let mut program = Program::new(self.alphabet.clone(), self.l_state + other.l_state);
         // `self` and `other` are `Program` instances so it doesn't need to use insert method.
         let extension = self.container.iter().map(|inst| match inst.tail.state {
-            0 => {
+            State(0) => {
                 let mut inst = inst.clone();
-                inst.tail.state = self.l_state + 1;
+                inst.tail.state = self.l_state + State(1);
                 inst
             }
             _ => inst.clone(),
@@ -145,7 +145,7 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
             let mut inst = inst.clone();
             inst.head.state += self.l_state;
             inst.tail.state += match inst.tail.state {
-                0 => 0,
+                State(0) => State(0),
                 _ => self.l_state,
             };
             inst
@@ -158,15 +158,15 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
 
 impl<S: Symbol, I> Extend<I> for Program<S>
 where
-    I: IntoIterator<Item = (u32, S, u32, S, Move)>,
+    I: IntoIterator<Item = (usize, S, usize, S, Move)>,
 {
     /// Extends the program by tuple `(u32, S, u32, S, Move)` first two
     /// elements are going to [`Head`] and the last three are going to [`Tail`]
     fn extend(&mut self, iterable: I) -> Result<(), String> {
         for (h_state, h_symbol, t_state, t_symbol, t_movement) in iterable {
             self.insert(Instruction::new(
-                Head::new(h_state, h_symbol),
-                Tail::new(t_state, t_symbol, t_movement),
+                Head::new(State(h_state), h_symbol),
+                Tail::new(State(t_state), t_symbol, t_movement),
             ))?;
         }
         Ok(())

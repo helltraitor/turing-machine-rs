@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
-use turing_machine_rs::instruction::Move;
+use turing_machine_rs::instruction::{Move, State};
 use turing_machine_rs::machines::{Classic, Debugger};
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
@@ -13,7 +13,7 @@ mod copy {
     use super::*;
 
     fn new_custom_machine() -> Classic<char> {
-        let mut program = Program::new(vec![' '], 1);
+        let mut program = Program::new(vec![' '], State(1));
         program.extend([(1, ' ', 1, ' ', Move::Right)]);
 
         Classic::new(program, ' ').unwrap()
@@ -56,7 +56,7 @@ mod clone {
     use super::*;
 
     fn new_custom_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new(' ')], 1);
+        let mut program = Program::new(vec![Box::new(' ')], State(1));
         program.extend([(1, Box::new(' '), 1, Box::new(' '), Move::Right)]);
 
         Classic::new(program, Box::new(' ')).unwrap()
@@ -99,7 +99,7 @@ mod copy_turing_machine {
     use super::*;
 
     fn new_zerofy_machine() -> Classic<char> {
-        let mut program = Program::new(vec!['0', '1'], 4);
+        let mut program = Program::new(vec!['0', '1'], State(4));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (2, '0', 3, '0', Move::Left),
@@ -120,7 +120,7 @@ mod copy_turing_machine {
         let result = debugger.execute(conf).unwrap();
 
         let mut expected = Configuration::new_nrm(Tape::from("0000")).unwrap();
-        expected.state = 0;
+        expected.state = State(0);
 
         assert_eq!(expected, result);
     }
@@ -135,7 +135,7 @@ mod copy_turing_machine {
             .execute_once(debugger.execute_once(conf).unwrap())
             .unwrap();
 
-        let expected = Configuration::new(Tape::from("0110"), 2, 2).unwrap();
+        let expected = Configuration::new(Tape::from("0110"), 2, State(2)).unwrap();
 
         assert_eq!(expected, result);
     }
@@ -148,18 +148,18 @@ mod copy_turing_machine {
         let conf = Configuration::new_nrm(Tape::from("0110")).unwrap();
 
         let result = debugger
-            .execute_until(conf, |conf| conf.state == 3)
+            .execute_until(conf, |conf| conf.state == State(3))
             .unwrap();
 
         assert_eq!(
-            Configuration::new(Tape::from("0110"), 2, 3).unwrap(),
+            Configuration::new(Tape::from("0110"), 2, State(3)).unwrap(),
             result
         );
     }
 
     #[test]
     fn translate_std() {
-        let mut program = Program::new(vec!['0', '1'], 3);
+        let mut program = Program::new(vec!['0', '1'], State(3));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (1, '1', 1, '1', Move::Left),
@@ -178,7 +178,7 @@ mod copy_turing_machine {
 
     #[test]
     fn translate_nrm() {
-        let mut program = Program::new(vec!['0', '1'], 3);
+        let mut program = Program::new(vec!['0', '1'], State(3));
         program.extend([
             (1, '0', 2, '0', Move::Right),
             (1, '1', 1, '1', Move::Left),
@@ -203,7 +203,7 @@ mod clone_turing_machine {
     use super::*;
 
     fn new_zerofy_machine() -> Classic<Box<char>> {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(4));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (2, Box::new('0'), 3, Box::new('0'), Move::Left),
@@ -226,7 +226,7 @@ mod clone_turing_machine {
 
         let mut expected =
             Configuration::new_nrm(Tape::new("0000".chars().map(|ch| Box::new(ch)))).unwrap();
-        expected.state = 0;
+        expected.state = State(0);
 
         assert_eq!(expected, result);
     }
@@ -242,8 +242,12 @@ mod clone_turing_machine {
             .execute_once(debugger.execute_once(conf).unwrap())
             .unwrap();
 
-        let expected =
-            Configuration::new(Tape::new("0110".chars().map(|ch| Box::new(ch))), 2, 2).unwrap();
+        let expected = Configuration::new(
+            Tape::new("0110".chars().map(|ch| Box::new(ch))),
+            2,
+            State(2),
+        )
+        .unwrap();
 
         assert_eq!(expected, result);
     }
@@ -257,18 +261,23 @@ mod clone_turing_machine {
             Configuration::new_nrm(Tape::new("0110".chars().map(|ch| Box::new(ch)))).unwrap();
 
         let result = debugger
-            .execute_until(conf, |conf| conf.state == 3)
+            .execute_until(conf, |conf| conf.state == State(3))
             .unwrap();
 
         assert_eq!(
-            Configuration::new(Tape::new("0110".chars().map(|ch| Box::new(ch))), 2, 3).unwrap(),
+            Configuration::new(
+                Tape::new("0110".chars().map(|ch| Box::new(ch))),
+                2,
+                State(3)
+            )
+            .unwrap(),
             result
         );
     }
 
     #[test]
     fn translate_std() {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (1, Box::new('1'), 1, Box::new('1'), Move::Left),
@@ -289,7 +298,7 @@ mod clone_turing_machine {
 
     #[test]
     fn translate_nrm() {
-        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
+        let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
         program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Move::Right),
             (1, Box::new('1'), 1, Box::new('1'), Move::Left),

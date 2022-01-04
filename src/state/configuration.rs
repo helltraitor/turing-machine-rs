@@ -1,6 +1,6 @@
 use std::fmt::{Display, Error, Formatter};
 
-use crate::instruction::Move;
+use crate::instruction::{Move, State};
 use crate::state::Tape;
 use crate::Symbol;
 
@@ -13,7 +13,7 @@ pub struct Configuration<S: Symbol> {
     index: usize,
     /// [`Configuration`] state is using by [`crate::TuringMachine`]
     /// and cannot be changed by self methods.
-    pub state: u32,
+    pub state: State,
 }
 
 impl<S: Symbol> Configuration<S> {
@@ -22,7 +22,7 @@ impl<S: Symbol> Configuration<S> {
     ///
     /// Returns a new [`Ok(Configuration)`] if index is in tape bounds,
     /// otherwise a [`Err(String)`] with diagnostic information.
-    pub fn new(tape: Tape<S>, index: usize, state: u32) -> Result<Self, String> {
+    pub fn new(tape: Tape<S>, index: usize, state: State) -> Result<Self, String> {
         match tape.len() > index {
             true => Ok(Configuration { tape, index, state }),
             false => Err(format!(
@@ -40,7 +40,7 @@ impl<S: Symbol> Configuration<S> {
     /// Returns a new [`Ok(Configuration)`] if the tape is not empty
     /// otherwise a [`Err(String)`] with diagnostic information.
     pub fn new_nrm(tape: Tape<S>) -> Result<Self, String> {
-        Configuration::new(tape, 0, 1)
+        Configuration::new(tape, 0, State(1))
     }
 
     /// Constructs a new [`Configuration`] from tape: [`Tape`],
@@ -51,12 +51,12 @@ impl<S: Symbol> Configuration<S> {
     /// otherwise a [`Err(String)`] with diagnostic information.
     pub fn new_std(tape: Tape<S>) -> Result<Self, String> {
         let last = tape.len() - 1;
-        Configuration::new(tape, last, 1)
+        Configuration::new(tape, last, State(1))
     }
 
     /// Destructs [`Configuration`] into `(Tape<S>, usize, u32)`. May be used
     /// only with owned values, not a borrowed.
-    pub fn destruct(self) -> (Tape<S>, usize, u32) {
+    pub fn destruct(self) -> (Tape<S>, usize, State) {
         (self.tape, self.index, self.state)
     }
 
