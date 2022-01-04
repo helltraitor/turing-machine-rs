@@ -16,14 +16,14 @@ use crate::Symbol;
 ///
 /// use turing_machine_rs::instruction::Direction;
 /// use turing_machine_rs::machines::Classic;
-/// use turing_machine_rs::program::{ExtendBy, Program};
+/// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::Tape;
 /// use turing_machine_rs::TuringMachine;
 ///
 /// fn main() {
 ///     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
 ///     // Trait for more comfortable coding
-///     program.extend_by([
+///     program.extend([
 ///         // Instruction consists of Head and Tail parts
 ///         // Head state, Head symbol, Tail state, Tail symbol, Tail Direction
 ///         (1, 't', 2, 'n', Direction::Right),
@@ -68,13 +68,13 @@ pub trait TuringMachine<S: Symbol> {
     /// ```rust
     /// use turing_machine_rs::instruction::Direction;
     /// use turing_machine_rs::machines::Classic;
-    /// use turing_machine_rs::program::{ExtendBy, Program};
+    /// use turing_machine_rs::program::{Extend, Program};
     /// use turing_machine_rs::state::{Configuration, Tape};
     /// use turing_machine_rs::TuringMachine;
     ///
     /// fn main() {
     ///     let mut program = Program::new(vec!['0', '1'], 3);
-    ///     program.extend_by([
+    ///     program.extend([
     ///         (1, '0', 2, '0', Direction::Right),
     ///         (1, '1', 1, '1', Direction::Left),
     ///         (2, '0', 3, '1', Direction::Left),

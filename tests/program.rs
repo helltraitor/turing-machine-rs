@@ -1,5 +1,5 @@
 use turing_machine_rs::instruction::{Direction, Head, Instruction, Tail};
-use turing_machine_rs::program::{ExtendBy, Program};
+use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::With;
 
 #[cfg(test)]
@@ -127,11 +127,11 @@ mod copy {
 }
 
 #[cfg(test)]
-mod copy_extend_by {
+mod copy_extend {
     use super::*;
 
     #[test]
-    fn extend_by() {
+    fn extend() {
         let mut expected = Program::new(vec!['0', '1'], 1);
         let _ = expected.insert(Instruction::new(
             Head::new(1, '0'),
@@ -143,7 +143,7 @@ mod copy_extend_by {
         ));
 
         let mut program = Program::new(vec!['0', '1'], 1);
-        program.extend_by([
+        program.extend([
             (1, '0', 1, '0', Direction::Right),
             (1, '1', 0, '0', Direction::Right),
         ]);
@@ -362,11 +362,11 @@ mod clone {
 }
 
 #[cfg(test)]
-mod clone_extend_by {
+mod clone_extend {
     use super::*;
 
     #[test]
-    fn extend_by() {
+    fn extend() {
         let mut expected = Program::new(vec![Box::new('0'), Box::new('1')], 1);
         let _ = expected.insert(Instruction::new(
             Head::new(1, Box::new('0')),
@@ -378,7 +378,7 @@ mod clone_extend_by {
         ));
 
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 1);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 1, Box::new('0'), Direction::Right),
             (1, Box::new('1'), 0, Box::new('0'), Direction::Right),
         ]);

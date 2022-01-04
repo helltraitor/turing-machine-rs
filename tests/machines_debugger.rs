@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 use turing_machine_rs::instruction::Direction;
 use turing_machine_rs::machines::{Classic, Debugger};
-use turing_machine_rs::program::{ExtendBy, Program};
+use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
 use turing_machine_rs::TuringMachine;
 
@@ -14,7 +14,7 @@ mod copy {
 
     fn new_custom_machine() -> Classic<char> {
         let mut program = Program::new(vec![' '], 1);
-        program.extend_by([(1, ' ', 1, ' ', Direction::Right)]);
+        program.extend([(1, ' ', 1, ' ', Direction::Right)]);
 
         Classic::new(program, ' ').unwrap()
     }
@@ -57,7 +57,7 @@ mod clone {
 
     fn new_custom_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new(' ')], 1);
-        program.extend_by([(1, Box::new(' '), 1, Box::new(' '), Direction::Right)]);
+        program.extend([(1, Box::new(' '), 1, Box::new(' '), Direction::Right)]);
 
         Classic::new(program, Box::new(' ')).unwrap()
     }
@@ -100,7 +100,7 @@ mod copy_turing_machine {
 
     fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 4);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 3, '0', Direction::Left),
             (2, '1', 2, '1', Direction::Right),
@@ -160,7 +160,7 @@ mod copy_turing_machine {
     #[test]
     fn translate_std() {
         let mut program = Program::new(vec!['0', '1'], 3);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (1, '1', 1, '1', Direction::Left),
             (2, '0', 3, '1', Direction::Left),
@@ -179,7 +179,7 @@ mod copy_turing_machine {
     #[test]
     fn translate_nrm() {
         let mut program = Program::new(vec!['0', '1'], 3);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (1, '1', 1, '1', Direction::Left),
             (2, '0', 3, '1', Direction::Left),
@@ -204,7 +204,7 @@ mod clone_turing_machine {
 
     fn new_zerofy_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (2, Box::new('0'), 3, Box::new('0'), Direction::Left),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
@@ -269,7 +269,7 @@ mod clone_turing_machine {
     #[test]
     fn translate_std() {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
             (2, Box::new('0'), 3, Box::new('1'), Direction::Left),
@@ -290,7 +290,7 @@ mod clone_turing_machine {
     #[test]
     fn translate_nrm() {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
             (2, Box::new('0'), 3, Box::new('1'), Direction::Left),

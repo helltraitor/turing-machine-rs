@@ -21,12 +21,12 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// use turing_machine_rs::TuringMachine;
 /// use turing_machine_rs::instruction::Direction;
 /// use turing_machine_rs::machines::{Debugger, Classic};
-/// use turing_machine_rs::program::{ExtendBy, Program};
+/// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::{Configuration, Tape};
 ///
 /// fn main() {
 ///     let mut program = Program::new(vec![' '], 1);
-///     program.extend_by([(1, ' ', 1, ' ', Direction::Right)]);
+///     program.extend([(1, ' ', 1, ' ', Direction::Right)]);
 ///     let machine = Classic::new(program, ' ').unwrap();
 ///
 ///     let mut debugger = Debugger::new(machine);

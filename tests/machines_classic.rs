@@ -1,6 +1,6 @@
 use turing_machine_rs::instruction::{Direction, Head, Instruction, Tail};
 use turing_machine_rs::machines::Classic;
-use turing_machine_rs::program::{ExtendBy, Program};
+use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
 use turing_machine_rs::{TuringMachine, With};
 
@@ -46,7 +46,7 @@ mod copy_turing_machine {
 
     fn new_fail_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 3);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (1, '1', 1, '1', Direction::Left),
             (3, '0', 0, '0', Direction::Center),
@@ -58,7 +58,7 @@ mod copy_turing_machine {
 
     fn new_success_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 3);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (1, '1', 1, '1', Direction::Left),
             (2, '0', 3, '1', Direction::Left),
@@ -73,7 +73,7 @@ mod copy_turing_machine {
     #[test]
     fn execute() {
         let mut program = Program::new(vec![' ', '0', '1'], 2);
-        program.extend_by([
+        program.extend([
             (1, ' ', 2, ' ', Direction::Right),
             (1, '0', 1, '1', Direction::Left),
             (1, '1', 1, '0', Direction::Left),
@@ -177,7 +177,7 @@ mod clone_turing_machine {
 
     fn new_fail_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
             (3, Box::new('0'), 0, Box::new('0'), Direction::Center),
@@ -189,7 +189,7 @@ mod clone_turing_machine {
 
     fn new_success_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 3);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (1, Box::new('1'), 1, Box::new('1'), Direction::Left),
             (2, Box::new('0'), 3, Box::new('1'), Direction::Left),
@@ -204,7 +204,7 @@ mod clone_turing_machine {
     #[test]
     fn execute() {
         let mut program = Program::new(vec![Box::new(' '), Box::new('0'), Box::new('1')], 2);
-        program.extend_by([
+        program.extend([
             (1, Box::new(' '), 2, Box::new(' '), Direction::Right),
             (1, Box::new('0'), 1, Box::new('1'), Direction::Left),
             (1, Box::new('1'), 1, Box::new('0'), Direction::Left),
@@ -316,7 +316,7 @@ mod copy_with_for_classic {
 
     fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 4);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 3, '0', Direction::Left),
             (2, '1', 2, '1', Direction::Right),
@@ -329,7 +329,7 @@ mod copy_with_for_classic {
 
     fn new_left_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Left),
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Left),
@@ -339,7 +339,7 @@ mod copy_with_for_classic {
 
     fn new_right_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),
@@ -349,7 +349,7 @@ mod copy_with_for_classic {
 
     fn new_trans_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 19);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 3, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),
@@ -472,7 +472,7 @@ mod clone_with_for_classic {
 
     fn new_zerofy_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 4);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (2, Box::new('0'), 3, Box::new('0'), Direction::Left),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
@@ -485,7 +485,7 @@ mod clone_with_for_classic {
 
     fn new_left_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Left),
             (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Left),
@@ -495,7 +495,7 @@ mod clone_with_for_classic {
 
     fn new_right_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 2);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (2, Box::new('0'), 0, Box::new('0'), Direction::Center),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),
@@ -505,7 +505,7 @@ mod clone_with_for_classic {
 
     fn new_trans_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], 19);
-        program.extend_by([
+        program.extend([
             (1, Box::new('0'), 2, Box::new('0'), Direction::Right),
             (2, Box::new('0'), 3, Box::new('0'), Direction::Center),
             (2, Box::new('1'), 2, Box::new('1'), Direction::Right),

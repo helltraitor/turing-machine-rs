@@ -2,7 +2,7 @@ extern crate turing_machine_rs;
 
 use turing_machine_rs::instruction::Direction;
 use turing_machine_rs::machines::Classic;
-use turing_machine_rs::program::{ExtendBy, Program};
+use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::{Configuration, Tape};
 use turing_machine_rs::TuringMachine;
 
@@ -26,7 +26,7 @@ fn main() {
         9,
     );
     // This is simplest implementation of `change choose second to choose third` machine
-    program.extend_by([
+    program.extend([
         // Find l_shift
         (1, r_shift.clone(), 1, r_shift.clone(), Direction::Right),
         (1, trans.clone(), 1, trans.clone(), Direction::Right),
@@ -95,7 +95,7 @@ mod nrm_machines {
 
     pub fn new_stand_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 1);
-        program.extend_by([
+        program.extend([
             (1, '0', 0, '0', Direction::Center),
             (1, '1', 0, '1', Direction::Center),
         ]);
@@ -104,7 +104,7 @@ mod nrm_machines {
 
     pub fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 4);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 3, '0', Direction::Left),
             (2, '1', 2, '1', Direction::Right),
@@ -117,7 +117,7 @@ mod nrm_machines {
 
     pub fn new_left_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Left),
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Left),
@@ -127,7 +127,7 @@ mod nrm_machines {
 
     pub fn new_right_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 2);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 0, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),
@@ -137,7 +137,7 @@ mod nrm_machines {
 
     pub fn new_trans_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], 19);
-        program.extend_by([
+        program.extend([
             (1, '0', 2, '0', Direction::Right),
             (2, '0', 3, '0', Direction::Center),
             (2, '1', 2, '1', Direction::Right),

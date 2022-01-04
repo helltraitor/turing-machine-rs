@@ -2,13 +2,13 @@ extern crate turing_machine_rs;
 
 use turing_machine_rs::instruction::Direction;
 use turing_machine_rs::machines::Classic;
-use turing_machine_rs::program::{ExtendBy, Program};
+use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::Tape;
 use turing_machine_rs::TuringMachine;
 
 fn main() {
     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
-    program.extend_by([
+    program.extend([
         (1, 't', 2, 'n', Direction::Right),
         (2, 'e', 3, 'i', Direction::Right),
         (3, 's', 4, 'c', Direction::Right),

@@ -1,7 +1,7 @@
 //! Provides [`Program`] realization for Turing machine.
 //!
 //! This module provides [`Program`] which is using for initialization
-//! a [`crate::TuringMachine`] and [`ExtendBy`] trait for [`Program`] which
+//! a [`crate::TuringMachine`] and [`Extend`] trait for [`Program`] which
 //! can be used for activating additional functional (pretty usefull).
 
 use std::fmt::{Display, Error, Formatter};
@@ -104,10 +104,10 @@ impl<S: Symbol> Program<S> {
     }
 }
 
-/// Helper trait which allows to implement extend_by method.
-pub trait ExtendBy<I: ?Sized> {
+/// Helper trait which allows to implement extend method.
+pub trait Extend<I: ?Sized> {
     /// Extends the program with some object depends to realization.
-    fn extend_by(&mut self, iterable: I);
+    fn extend(&mut self, iterable: I) -> Result<(), String>;
 }
 
 impl<S: Symbol> With<Program<S>> for Program<S> {
@@ -156,19 +156,20 @@ impl<S: Symbol> With<Program<S>> for Program<S> {
     }
 }
 
-impl<S: Symbol, I> ExtendBy<I> for Program<S>
+impl<S: Symbol, I> Extend<I> for Program<S>
 where
     I: IntoIterator<Item = (u32, S, u32, S, Direction)>,
 {
     /// Extends the program by tuple `(u32, S, u32, S, Direction)` first two
     /// elements are going to [`Head`] and the last three are going to [`Tail`]
-    fn extend_by(&mut self, iterable: I) {
+    fn extend(&mut self, iterable: I) -> Result<(), String> {
         for (h_state, h_symbol, t_state, t_symbol, t_direction) in iterable {
-            let _ = self.insert(Instruction::new(
+            self.insert(Instruction::new(
                 Head::new(h_state, h_symbol),
                 Tail::new(t_state, t_symbol, t_direction),
-            ));
+            ))?;
         }
+        Ok(())
     }
 }
 
