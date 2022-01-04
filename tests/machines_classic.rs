@@ -46,26 +46,30 @@ mod copy_turing_machine {
 
     fn new_fail_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(3));
-        program.extend([
-            (1, '0', 2, '0', Move::Right),
-            (1, '1', 1, '1', Move::Left),
-            (3, '0', 0, '0', Move::None),
-            (3, '1', 3, '0', Move::Left),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Right),
+                (1, '1', 1, '1', Move::Left),
+                (3, '0', 0, '0', Move::None),
+                (3, '1', 3, '0', Move::Left),
+            ])
+            .unwrap();
 
         Classic::new(program, '0').unwrap()
     }
 
     fn new_success_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(3));
-        program.extend([
-            (1, '0', 2, '0', Move::Right),
-            (1, '1', 1, '1', Move::Left),
-            (2, '0', 3, '1', Move::Left),
-            (2, '1', 2, '1', Move::Right),
-            (3, '0', 0, '0', Move::None),
-            (3, '1', 3, '0', Move::Left),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Right),
+                (1, '1', 1, '1', Move::Left),
+                (2, '0', 3, '1', Move::Left),
+                (2, '1', 2, '1', Move::Right),
+                (3, '0', 0, '0', Move::None),
+                (3, '1', 3, '0', Move::Left),
+            ])
+            .unwrap();
 
         Classic::new(program, '0').unwrap()
     }
@@ -73,14 +77,16 @@ mod copy_turing_machine {
     #[test]
     fn execute() {
         let mut program = Program::new(vec![' ', '0', '1'], State(2));
-        program.extend([
-            (1, ' ', 2, ' ', Move::Right),
-            (1, '0', 1, '1', Move::Left),
-            (1, '1', 1, '0', Move::Left),
-            (2, ' ', 0, ' ', Move::Left),
-            (2, '0', 2, '0', Move::Right),
-            (2, '1', 2, '1', Move::Right),
-        ]);
+        program
+            .extend([
+                (1, ' ', 2, ' ', Move::Right),
+                (1, '0', 1, '1', Move::Left),
+                (1, '1', 1, '0', Move::Left),
+                (2, ' ', 0, ' ', Move::Left),
+                (2, '0', 2, '0', Move::Right),
+                (2, '1', 2, '1', Move::Right),
+            ])
+            .unwrap();
         let machine = Classic::new(program, ' ').unwrap();
 
         let conf = Configuration::new(Tape::from("001100"), 5, State(0)).unwrap();
@@ -181,26 +187,30 @@ mod clone_turing_machine {
 
     fn new_fail_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
-            (3, Box::new('0'), 0, Box::new('0'), Move::None),
-            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+                (3, Box::new('0'), 0, Box::new('0'), Move::None),
+                (3, Box::new('1'), 3, Box::new('0'), Move::Left),
+            ])
+            .unwrap();
 
         Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_success_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(3));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (1, Box::new('1'), 1, Box::new('1'), Move::Left),
-            (2, Box::new('0'), 3, Box::new('1'), Move::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Move::None),
-            (3, Box::new('1'), 3, Box::new('0'), Move::Left),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (1, Box::new('1'), 1, Box::new('1'), Move::Left),
+                (2, Box::new('0'), 3, Box::new('1'), Move::Left),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+                (3, Box::new('0'), 0, Box::new('0'), Move::None),
+                (3, Box::new('1'), 3, Box::new('0'), Move::Left),
+            ])
+            .unwrap();
 
         Classic::new(program, Box::new('0')).unwrap()
     }
@@ -208,14 +218,16 @@ mod clone_turing_machine {
     #[test]
     fn execute() {
         let mut program = Program::new(vec![Box::new(' '), Box::new('0'), Box::new('1')], State(2));
-        program.extend([
-            (1, Box::new(' '), 2, Box::new(' '), Move::Right),
-            (1, Box::new('0'), 1, Box::new('1'), Move::Left),
-            (1, Box::new('1'), 1, Box::new('0'), Move::Left),
-            (2, Box::new(' '), 0, Box::new(' '), Move::Left),
-            (2, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
-        ]);
+        program
+            .extend([
+                (1, Box::new(' '), 2, Box::new(' '), Move::Right),
+                (1, Box::new('0'), 1, Box::new('1'), Move::Left),
+                (1, Box::new('1'), 1, Box::new('0'), Move::Left),
+                (2, Box::new(' '), 0, Box::new(' '), Move::Left),
+                (2, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            ])
+            .unwrap();
         let machine = Classic::new(program, Box::new(' ')).unwrap();
 
         let conf = Configuration::new(
@@ -337,70 +349,78 @@ mod copy_with_for_classic {
 
     fn new_zerofy_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(4));
-        program.extend([
-            (1, '0', 2, '0', Move::Right),
-            (2, '0', 3, '0', Move::Left),
-            (2, '1', 2, '1', Move::Right),
-            (3, '0', 0, '0', Move::None),
-            (3, '1', 4, '0', Move::None),
-            (4, '0', 3, '0', Move::Left),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Right),
+                (2, '0', 3, '0', Move::Left),
+                (2, '1', 2, '1', Move::Right),
+                (3, '0', 0, '0', Move::None),
+                (3, '1', 4, '0', Move::None),
+                (4, '0', 3, '0', Move::Left),
+            ])
+            .unwrap();
         Classic::new(program, '0').unwrap()
     }
 
     fn new_left_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(2));
-        program.extend([
-            (1, '0', 2, '0', Move::Left),
-            (2, '0', 0, '0', Move::None),
-            (2, '1', 2, '1', Move::Left),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Left),
+                (2, '0', 0, '0', Move::None),
+                (2, '1', 2, '1', Move::Left),
+            ])
+            .unwrap();
         Classic::new(program, '0').unwrap()
     }
 
     fn new_right_shift_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(2));
-        program.extend([
-            (1, '0', 2, '0', Move::Right),
-            (2, '0', 0, '0', Move::None),
-            (2, '1', 2, '1', Move::Right),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Right),
+                (2, '0', 0, '0', Move::None),
+                (2, '1', 2, '1', Move::Right),
+            ])
+            .unwrap();
         Classic::new(program, '0').unwrap()
     }
 
     fn new_trans_machine() -> Classic<char> {
         let mut program = Program::new(vec!['0', '1'], State(19));
-        program.extend([
-            (1, '0', 2, '0', Move::Right),
-            (2, '0', 3, '0', Move::None),
-            (2, '1', 2, '1', Move::Right),
-            (3, '0', 4, '0', Move::Left),
-            (4, '0', 7, '0', Move::None),
-            (4, '1', 5, '0', Move::None),
-            (5, '0', 6, '0', Move::Left),
-            (6, '0', 7, '1', Move::None),
-            (6, '1', 6, '1', Move::Left),
-            (7, '0', 16, '1', Move::None),
-            (7, '1', 8, '1', Move::Left),
-            (8, '0', 18, '0', Move::Right),
-            (8, '1', 9, '0', Move::None),
-            (9, '0', 10, '0', Move::Right),
-            (10, '0', 11, '1', Move::None),
-            (10, '1', 10, '1', Move::Right),
-            (11, '1', 12, '1', Move::Left),
-            (12, '1', 13, '0', Move::None),
-            (13, '0', 14, '0', Move::Left),
-            (14, '0', 15, '1', Move::None),
-            (14, '1', 14, '1', Move::Left),
-            (15, '0', 7, '0', Move::None),
-            (15, '1', 7, '1', Move::None),
-            (16, '1', 17, '1', Move::Left),
-            (17, '0', 19, '0', Move::Right),
-            (17, '1', 15, '0', Move::None),
-            (18, '0', 0, '0', Move::None),
-            (18, '1', 18, '1', Move::Right),
-            (19, '1', 0, '0', Move::None),
-        ]);
+        program
+            .extend([
+                (1, '0', 2, '0', Move::Right),
+                (2, '0', 3, '0', Move::None),
+                (2, '1', 2, '1', Move::Right),
+                (3, '0', 4, '0', Move::Left),
+                (4, '0', 7, '0', Move::None),
+                (4, '1', 5, '0', Move::None),
+                (5, '0', 6, '0', Move::Left),
+                (6, '0', 7, '1', Move::None),
+                (6, '1', 6, '1', Move::Left),
+                (7, '0', 16, '1', Move::None),
+                (7, '1', 8, '1', Move::Left),
+                (8, '0', 18, '0', Move::Right),
+                (8, '1', 9, '0', Move::None),
+                (9, '0', 10, '0', Move::Right),
+                (10, '0', 11, '1', Move::None),
+                (10, '1', 10, '1', Move::Right),
+                (11, '1', 12, '1', Move::Left),
+                (12, '1', 13, '0', Move::None),
+                (13, '0', 14, '0', Move::Left),
+                (14, '0', 15, '1', Move::None),
+                (14, '1', 14, '1', Move::Left),
+                (15, '0', 7, '0', Move::None),
+                (15, '1', 7, '1', Move::None),
+                (16, '1', 17, '1', Move::Left),
+                (17, '0', 19, '0', Move::Right),
+                (17, '1', 15, '0', Move::None),
+                (18, '0', 0, '0', Move::None),
+                (18, '1', 18, '1', Move::Right),
+                (19, '1', 0, '0', Move::None),
+            ])
+            .unwrap();
         Classic::new(program, '0').unwrap()
     }
 
@@ -493,70 +513,78 @@ mod clone_with_for_classic {
 
     fn new_zerofy_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(4));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (2, Box::new('0'), 3, Box::new('0'), Move::Left),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
-            (3, Box::new('0'), 0, Box::new('0'), Move::None),
-            (3, Box::new('1'), 4, Box::new('0'), Move::None),
-            (4, Box::new('0'), 3, Box::new('0'), Move::Left),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (2, Box::new('0'), 3, Box::new('0'), Move::Left),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+                (3, Box::new('0'), 0, Box::new('0'), Move::None),
+                (3, Box::new('1'), 4, Box::new('0'), Move::None),
+                (4, Box::new('0'), 3, Box::new('0'), Move::Left),
+            ])
+            .unwrap();
         Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_left_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(2));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Left),
-            (2, Box::new('0'), 0, Box::new('0'), Move::None),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Left),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Left),
+                (2, Box::new('0'), 0, Box::new('0'), Move::None),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Left),
+            ])
+            .unwrap();
         Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_right_shift_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(2));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (2, Box::new('0'), 0, Box::new('0'), Move::None),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (2, Box::new('0'), 0, Box::new('0'), Move::None),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+            ])
+            .unwrap();
         Classic::new(program, Box::new('0')).unwrap()
     }
 
     fn new_trans_machine() -> Classic<Box<char>> {
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(19));
-        program.extend([
-            (1, Box::new('0'), 2, Box::new('0'), Move::Right),
-            (2, Box::new('0'), 3, Box::new('0'), Move::None),
-            (2, Box::new('1'), 2, Box::new('1'), Move::Right),
-            (3, Box::new('0'), 4, Box::new('0'), Move::Left),
-            (4, Box::new('0'), 7, Box::new('0'), Move::None),
-            (4, Box::new('1'), 5, Box::new('0'), Move::None),
-            (5, Box::new('0'), 6, Box::new('0'), Move::Left),
-            (6, Box::new('0'), 7, Box::new('1'), Move::None),
-            (6, Box::new('1'), 6, Box::new('1'), Move::Left),
-            (7, Box::new('0'), 16, Box::new('1'), Move::None),
-            (7, Box::new('1'), 8, Box::new('1'), Move::Left),
-            (8, Box::new('0'), 18, Box::new('0'), Move::Right),
-            (8, Box::new('1'), 9, Box::new('0'), Move::None),
-            (9, Box::new('0'), 10, Box::new('0'), Move::Right),
-            (10, Box::new('0'), 11, Box::new('1'), Move::None),
-            (10, Box::new('1'), 10, Box::new('1'), Move::Right),
-            (11, Box::new('1'), 12, Box::new('1'), Move::Left),
-            (12, Box::new('1'), 13, Box::new('0'), Move::None),
-            (13, Box::new('0'), 14, Box::new('0'), Move::Left),
-            (14, Box::new('0'), 15, Box::new('1'), Move::None),
-            (14, Box::new('1'), 14, Box::new('1'), Move::Left),
-            (15, Box::new('0'), 7, Box::new('0'), Move::None),
-            (15, Box::new('1'), 7, Box::new('1'), Move::None),
-            (16, Box::new('1'), 17, Box::new('1'), Move::Left),
-            (17, Box::new('0'), 19, Box::new('0'), Move::Right),
-            (17, Box::new('1'), 15, Box::new('0'), Move::None),
-            (18, Box::new('0'), 0, Box::new('0'), Move::None),
-            (18, Box::new('1'), 18, Box::new('1'), Move::Right),
-            (19, Box::new('1'), 0, Box::new('0'), Move::None),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 2, Box::new('0'), Move::Right),
+                (2, Box::new('0'), 3, Box::new('0'), Move::None),
+                (2, Box::new('1'), 2, Box::new('1'), Move::Right),
+                (3, Box::new('0'), 4, Box::new('0'), Move::Left),
+                (4, Box::new('0'), 7, Box::new('0'), Move::None),
+                (4, Box::new('1'), 5, Box::new('0'), Move::None),
+                (5, Box::new('0'), 6, Box::new('0'), Move::Left),
+                (6, Box::new('0'), 7, Box::new('1'), Move::None),
+                (6, Box::new('1'), 6, Box::new('1'), Move::Left),
+                (7, Box::new('0'), 16, Box::new('1'), Move::None),
+                (7, Box::new('1'), 8, Box::new('1'), Move::Left),
+                (8, Box::new('0'), 18, Box::new('0'), Move::Right),
+                (8, Box::new('1'), 9, Box::new('0'), Move::None),
+                (9, Box::new('0'), 10, Box::new('0'), Move::Right),
+                (10, Box::new('0'), 11, Box::new('1'), Move::None),
+                (10, Box::new('1'), 10, Box::new('1'), Move::Right),
+                (11, Box::new('1'), 12, Box::new('1'), Move::Left),
+                (12, Box::new('1'), 13, Box::new('0'), Move::None),
+                (13, Box::new('0'), 14, Box::new('0'), Move::Left),
+                (14, Box::new('0'), 15, Box::new('1'), Move::None),
+                (14, Box::new('1'), 14, Box::new('1'), Move::Left),
+                (15, Box::new('0'), 7, Box::new('0'), Move::None),
+                (15, Box::new('1'), 7, Box::new('1'), Move::None),
+                (16, Box::new('1'), 17, Box::new('1'), Move::Left),
+                (17, Box::new('0'), 19, Box::new('0'), Move::Right),
+                (17, Box::new('1'), 15, Box::new('0'), Move::None),
+                (18, Box::new('0'), 0, Box::new('0'), Move::None),
+                (18, Box::new('1'), 18, Box::new('1'), Move::Right),
+                (19, Box::new('1'), 0, Box::new('0'), Move::None),
+            ])
+            .unwrap();
         Classic::new(program, Box::new('0')).unwrap()
     }
 

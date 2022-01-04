@@ -146,7 +146,9 @@ mod copy_extend {
         ));
 
         let mut program = Program::new(vec!['0', '1'], State(1));
-        program.extend([(1, '0', 1, '0', Move::Right), (1, '1', 0, '0', Move::Right)]);
+        program
+            .extend([(1, '0', 1, '0', Move::Right), (1, '1', 0, '0', Move::Right)])
+            .unwrap();
 
         assert_eq!(expected, program);
     }
@@ -378,10 +380,12 @@ mod clone_extend {
         ));
 
         let mut program = Program::new(vec![Box::new('0'), Box::new('1')], State(1));
-        program.extend([
-            (1, Box::new('0'), 1, Box::new('0'), Move::Right),
-            (1, Box::new('1'), 0, Box::new('0'), Move::Right),
-        ]);
+        program
+            .extend([
+                (1, Box::new('0'), 1, Box::new('0'), Move::Right),
+                (1, Box::new('1'), 0, Box::new('0'), Move::Right),
+            ])
+            .unwrap();
 
         assert_eq!(expected, program);
     }
