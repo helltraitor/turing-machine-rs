@@ -3,58 +3,63 @@ use std::iter::FromIterator;
 
 use crate::Symbol;
 
-/// Tape is the main part of [`crate::state::Configuration`].
-/// This is the [`Vec`] wrapper with similar methods.
+/// [`Tape`] type is the main part of the [`crate::state::Configuration`]
+/// and it is based on the [`Vec`] type and has similar methods.
 ///
-/// Tape could be created within [`Tape::new`] with IntoIterator
-/// or within [`Tape::from`] as [`Tape<char>`] but only for [`str`] and [`String`] types.
+/// [`Tape`] can be created with the [`Tape::new`] method and [`IntoIterator`]
+/// object or with the [`Tape::from`] method as a [`Tape<char>`] but only
+/// for [`str`] and [`String`] types.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Tape<S: Symbol> {
     tape: Vec<S>,
 }
 
 impl<S: Symbol> Tape<S> {
-    /// Constructs a new [`Tape`] from [`IntoIterator`].
-    /// Tape is wrapper over [`Vec`] that's why tape can grow.
+    /// Constructs a new [`Tape`] from [`IntoIterator`] object.
     #[rustfmt::skip]
     pub fn new(symbols: impl IntoIterator<Item = S>) -> Self {
         Tape { tape: Vec::from_iter(symbols) }
     }
 
-    /// Returns a immutable reference to inner container. Zero cost method.
+    /// Returns an immutable [`Vec`] reference to the inner container.
+    ///
+    /// Zero cost method.
     pub fn as_vec(&self) -> &Vec<S> {
         &self.tape
     }
 
-    /// Returns [`Option::Some`] when index is in [`Tape`] bounds otherwise
-    /// [`Option::None`].
+    /// Returns [`Option::Some`] when the index is in the [`Tape`] bounds,
+    /// otherwise [`Option::None`].
     pub fn get(&self, index: usize) -> Option<&S> {
         self.tape.get(index)
     }
 
-    /// Inserts `element` at `index` position. Moves all items to rigth
-    /// when `index` is smaller then length of the [`Tape`].
+    /// Inserts the element that implements the [`Symbol`] trait
+    /// at the index [`usize`] position. When the index is less
+    /// than the length of the [`Tape`], all items are moved to the right.
     ///
     /// # Panics
-    /// Panics when `index` is large then [`Tape::len`].
+    /// Panics when the index is large then the [`Tape`] length.
     pub fn insert(&mut self, index: usize, element: S) {
         self.tape.insert(index, element);
     }
 
-    /// Returns `true` if tape contains symbols otherwise `false`.
+    /// Returns `true` if the [`Tape`] contains symbols, otherwise `false`.
+    ///
     /// Note that Turing tape cannot be empty but this method can return `false`
-    /// (because tape type is based on container type).
+    /// (because the [`Tape`] type is based on the [`Vec`] type).
     pub fn is_empty(&self) -> bool {
         self.tape.is_empty()
     }
 
-    /// Returns length of the [`Tape`]. Symbols cannot be removed from the Tape,
-    /// so length is always grow.
+    /// Returns the [`Tape`] length. Because symbols cannot be removed
+    /// from the [`Tape`] (only replaced), the length of the [`Tape`]
+    /// grows indefinitely.
     pub fn len(&self) -> usize {
         self.tape.len()
     }
 
-    /// Sets `element` at `index` position.
+    /// Sets the [`Symbol`] element at index [`usize`] position.
     ///
     /// # Panics
     /// Panic if the index is out of bounds.
@@ -74,16 +79,12 @@ impl<S: Symbol> Display for Tape<S> {
 }
 
 impl From<&str> for Tape<char> {
-    /// Constructs [`Tape<char>`] from [`str`]. Always available but needs using
-    /// type annotation [`Tape<char>`] when feature `str-as-copy` is not using.
     fn from(string: &str) -> Self {
         Tape::new(string.chars())
     }
 }
 
 impl From<String> for Tape<char> {
-    /// Constructs [`Tape<char>`] from [`String`]. Always available but needs using
-    /// type annotation [`Tape<char>`] when feature `string-as-copy` is not using.
     fn from(string: String) -> Self {
         Tape::new(string.chars())
     }
