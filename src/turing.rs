@@ -11,7 +11,6 @@ use crate::Symbol;
 /// Most important trait.
 ///
 /// # Examples
-///
 /// ```rust
 /// extern crate turing_machine_rs;
 ///
@@ -21,8 +20,9 @@ use crate::Symbol;
 /// use turing_machine_rs::state::Tape;
 /// use turing_machine_rs::TuringMachine;
 ///
-/// fn main() {
-///     let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], State(4));
+/// fn main() -> Result<(), String> {
+///    let alphabet = vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'];
+///    let mut program = Program::new(alphabet, State(4));
 ///     // Trait for more comfortable coding
 ///     program.extend([
 ///         // Instruction consists of Head and Tail parts
@@ -36,32 +36,32 @@ use crate::Symbol;
 ///         (2, 'i', 3, 'e', Move::Right),
 ///         (3, 'c', 4, 's', Move::Right),
 ///         (4, 'e', 0, 't', Move::None),
-///     ]);
-///     let machine = Classic::new(program, '_').unwrap();
+///     ])?;
+///     let machine = Classic::new(program, '_')?;
 ///
 ///     let test = Tape::from("test");
-///     let nice = machine.translate_nrm(test.clone()).unwrap();
+///     let nice = machine.translate_nrm(test.clone())?;
 ///     println!(
 ///         "{} {}!",
 ///         String::from_iter(nice.as_vec()),
 ///         String::from_iter(test.as_vec())
 ///     );
+///     Ok(())
 /// }
 /// ```
 pub trait TuringMachine<S: Symbol> {
-    /// Executes program and returns a mutated [`Configuration`] using
-    /// [`TuringMachine::execute_until`] method with `conf.state == 0`
-    /// predicate. This is the most common use method for program execution.
+    /// Executes the [`crate::program::Program`] and returns a mutated [`Configuration`]
+    /// using the [`TuringMachine::execute_until`] method with the `conf.state == 0`
+    /// predicate. This is the most commonly used method for [`Program`] execution.
     fn execute(&self, conf: Configuration<S>) -> Result<Configuration<S>, String> {
         self.execute_until(conf, |conf| conf.state == State(0))
     }
 
-    /// Turing machine msut have ability to execute program and change
-    /// [`Configuration`] once. This is important for machine and it
-    /// realization can variates depends to machine type.
+    /// A Turing machine must have the ability to execute [`crate::program::Program`]
+    /// and change the [`Configuration`] once. This is important for machines,
+    /// and its realization can vary depending on machine type.
     fn execute_once(&self, conf: Configuration<S>) -> Result<Configuration<S>, String>;
 
-    #[allow(clippy::needless_doctest_main)]
     /// Executes program untill stop predicate equals to `false` and returns
     /// a mutated [`Configuration`].
     ///
@@ -73,7 +73,7 @@ pub trait TuringMachine<S: Symbol> {
     /// use turing_machine_rs::state::{Configuration, Tape};
     /// use turing_machine_rs::TuringMachine;
     ///
-    /// fn main() {
+    /// fn main() -> Result<(), String> {
     ///     let mut program = Program::new(vec!['0', '1'], State(3));
     ///     program.extend([
     ///         (1, '0', 2, '0', Move::Right),
@@ -82,14 +82,16 @@ pub trait TuringMachine<S: Symbol> {
     ///         (2, '1', 2, '1', Move::Right),
     ///         (3, '0', 0, '0', Move::None),
     ///         (3, '1', 3, '0', Move::Left),
-    ///     ]);
-    ///     let machine = Classic::new(program, '0').unwrap();
+    ///     ])?;
+    ///     let machine = Classic::new(program, '0')?;
     ///
-    ///     let conf = Configuration::new_std(Tape::from("010")).unwrap();
-    ///     let result = machine.execute_until(conf, |conf| conf.state == State(3)).unwrap();
+    ///     let conf = Configuration::new_std(Tape::from("010"))?;
+    ///     let result = machine.execute_until(conf, |conf| conf.state == State(3))?;
     ///
-    ///     let expected = Configuration::new(Tape::from("0101"), 2, State(3)).unwrap();
+    ///     let expected = Configuration::new(Tape::from("0101"), 2, State(3))?;
     ///     assert_eq!(expected, result);
+    ///
+    ///     Ok(())
     /// }
     /// ```
     fn execute_until(
@@ -98,16 +100,16 @@ pub trait TuringMachine<S: Symbol> {
         until: impl Fn(&Configuration<S>) -> bool,
     ) -> Result<Configuration<S>, String>;
 
-    /// Translates and returns a mutated [`Tape`] using [`TuringMachine::execute`]
-    /// method in standart begining [`Configuration::new_nrm`].
+    /// Translates and returns a mutated [`Tape`] using the [`TuringMachine::execute`]
+    /// method as the [`Configuration::new_std`].
     fn translate_std(&self, tape: Tape<S>) -> Result<Tape<S>, String> {
         let conf = Configuration::new_std(tape)?;
         let exec = self.execute(conf)?;
         Ok(exec.into_tape())
     }
 
-    /// Translates and returns a mutated [`Tape`] using [`TuringMachine::execute`]
-    /// method in normal begining [`Configuration::new_nrm`].
+    /// Translates and returns a mutated [`Tape`] using the [`TuringMachine::execute`]
+    /// method as the [`Configuration::new_nrm`].
     fn translate_nrm(&self, tape: Tape<S>) -> Result<Tape<S>, String> {
         let conf = Configuration::new_nrm(tape)?;
         let exec = self.execute(conf)?;
