@@ -67,6 +67,6 @@ fn main() {
     expr.push_str(rhs);
     let tape = Tape::from(expr);
 
-    let res = machine.translate_std(tape);
+    let res = machine.translate_std(tape).unwrap();
     println!("{} + {} = {}", lhs, rhs, String::from_iter(res.as_vec()));
 }

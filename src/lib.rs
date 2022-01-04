@@ -10,12 +10,13 @@
 //! Use `cargo doc --open` or proceed to repository on
 //! [Github](https://github.com/Helltraitor/turing-machine-rs).
 
-pub mod core;
+mod core;
 pub mod instruction;
 pub mod machines;
 pub mod program;
 pub mod state;
+mod turing;
 
 pub use crate::core::Symbol;
-pub use crate::core::TuringMachine;
 pub use crate::core::With;
+pub use crate::turing::TuringMachine;

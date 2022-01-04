@@ -60,7 +60,7 @@ fn main() {
         zerofy.clone(),
         l_shift.clone(),
     ]);
-    let result_choose_third = hyper_machine.translate_nrm(choose_second);
+    let result_choose_third = hyper_machine.translate_nrm(choose_second).unwrap();
 
     let expected_choose_third = Tape::new(vec![
         r_shift.clone(),
@@ -79,7 +79,7 @@ fn main() {
     let tape = Tape::from("0101101110");
     let mut conf = Configuration::new_nrm(tape.clone()).unwrap();
     for machine in result_choose_third.as_vec() {
-        conf = machine.execute(conf);
+        conf = machine.execute(conf).unwrap();
         conf.state = 1
     }
     println!(

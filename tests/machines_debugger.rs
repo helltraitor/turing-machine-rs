@@ -38,14 +38,14 @@ mod copy {
             let mut buffer = c_buffer.borrow_mut();
             buffer.push('c');
         });
-        let conf = debugger.execute_once(conf);
+        let conf = debugger.execute_once(conf).unwrap();
 
         let i_buffer = buffer.clone();
         debugger.set_i_handler(move |_, _| {
             let mut buffer = i_buffer.borrow_mut();
             buffer.push('i');
         });
-        debugger.execute_once(conf);
+        debugger.execute_once(conf).unwrap();
 
         assert_eq!(String::from("cci"), buffer.deref().borrow().as_ref());
     }
@@ -81,14 +81,14 @@ mod clone {
             let mut buffer = c_buffer.borrow_mut();
             buffer.push('c');
         });
-        let conf = debugger.execute_once(conf);
+        let conf = debugger.execute_once(conf).unwrap();
 
         let i_buffer = buffer.clone();
         debugger.set_i_handler(move |_, _| {
             let mut buffer = i_buffer.borrow_mut();
             buffer.push('i');
         });
-        debugger.execute_once(conf);
+        debugger.execute_once(conf).unwrap();
 
         assert_eq!(String::from("cci"), buffer.deref().borrow().as_ref());
     }
@@ -117,7 +117,7 @@ mod copy_turing_machine {
         let debugger = Debugger::new(machine);
 
         let conf = Configuration::new_nrm(Tape::from("0110")).unwrap();
-        let result = debugger.execute(conf);
+        let result = debugger.execute(conf).unwrap();
 
         let mut expected = Configuration::new_nrm(Tape::from("0000")).unwrap();
         expected.state = 0;
@@ -131,7 +131,9 @@ mod copy_turing_machine {
         let debugger = Debugger::new(machine);
 
         let conf = Configuration::new_nrm(Tape::from("0110")).unwrap();
-        let result = debugger.execute_once(debugger.execute_once(conf));
+        let result = debugger
+            .execute_once(debugger.execute_once(conf).unwrap())
+            .unwrap();
 
         let expected = Configuration::new(Tape::from("0110"), 2, 2).unwrap();
 
@@ -145,7 +147,9 @@ mod copy_turing_machine {
 
         let conf = Configuration::new_nrm(Tape::from("0110")).unwrap();
 
-        let result = debugger.execute_until(conf, |conf| conf.state == 3);
+        let result = debugger
+            .execute_until(conf, |conf| conf.state == 3)
+            .unwrap();
 
         assert_eq!(
             Configuration::new(Tape::from("0110"), 2, 3).unwrap(),
@@ -167,9 +171,9 @@ mod copy_turing_machine {
         let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
 
-        let expected = debugger.translate_std(Tape::from("010"));
+        let result = debugger.translate_std(Tape::from("010")).unwrap();
 
-        assert_eq!(expected, Tape::from("0101"));
+        assert_eq!(result, Tape::from("0101"));
     }
 
     #[test]
@@ -186,7 +190,7 @@ mod copy_turing_machine {
         let machine = Classic::new(program, '0').unwrap();
         let debugger = Debugger::new(machine);
 
-        let result = debugger.translate_nrm(Tape::from("010"));
+        let result = debugger.translate_nrm(Tape::from("010")).unwrap();
 
         let expected = Tape::from("001");
 
@@ -218,7 +222,7 @@ mod clone_turing_machine {
 
         let conf =
             Configuration::new_nrm(Tape::new("0110".chars().map(|ch| Box::new(ch)))).unwrap();
-        let result = debugger.execute(conf);
+        let result = debugger.execute(conf).unwrap();
 
         let mut expected =
             Configuration::new_nrm(Tape::new("0000".chars().map(|ch| Box::new(ch)))).unwrap();
@@ -234,7 +238,9 @@ mod clone_turing_machine {
 
         let conf =
             Configuration::new_nrm(Tape::new("0110".chars().map(|ch| Box::new(ch)))).unwrap();
-        let result = debugger.execute_once(debugger.execute_once(conf));
+        let result = debugger
+            .execute_once(debugger.execute_once(conf).unwrap())
+            .unwrap();
 
         let expected =
             Configuration::new(Tape::new("0110".chars().map(|ch| Box::new(ch))), 2, 2).unwrap();
@@ -250,7 +256,9 @@ mod clone_turing_machine {
         let conf =
             Configuration::new_nrm(Tape::new("0110".chars().map(|ch| Box::new(ch)))).unwrap();
 
-        let result = debugger.execute_until(conf, |conf| conf.state == 3);
+        let result = debugger
+            .execute_until(conf, |conf| conf.state == 3)
+            .unwrap();
 
         assert_eq!(
             Configuration::new(Tape::new("0110".chars().map(|ch| Box::new(ch))), 2, 3).unwrap(),
@@ -272,7 +280,9 @@ mod clone_turing_machine {
         let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);
 
-        let expected = debugger.translate_std(Tape::new("010".chars().map(|ch| Box::new(ch))));
+        let expected = debugger
+            .translate_std(Tape::new("010".chars().map(|ch| Box::new(ch))))
+            .unwrap();
 
         assert_eq!(expected, Tape::new("0101".chars().map(|ch| Box::new(ch))));
     }
@@ -291,7 +301,9 @@ mod clone_turing_machine {
         let machine = Classic::new(program, Box::new('0')).unwrap();
         let debugger = Debugger::new(machine);
 
-        let result = debugger.translate_nrm(Tape::new("010".chars().map(|ch| Box::new(ch))));
+        let result = debugger
+            .translate_nrm(Tape::new("010".chars().map(|ch| Box::new(ch))))
+            .unwrap();
 
         let expected = Tape::new("001".chars().map(|ch| Box::new(ch)));
 

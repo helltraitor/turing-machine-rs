@@ -37,19 +37,23 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
     /// # Panics
     /// Panics when program doesn't contains [`crate::instruction::Instruction`]
     /// with [`Head`] for this index and symbol.
-    fn execute_once(&self, mut conf: Configuration<S>) -> Configuration<S> {
+    fn execute_once(&self, mut conf: Configuration<S>) -> Result<Configuration<S>, String> {
         let head = Head::new(conf.state, conf.get_symbol().clone());
-        let inst = self.program.get(&head).unwrap().unwrap_or_else(|| {
-            panic!(
-                "uncovered case: have no tail for head ({}) in program",
-                head
-            )
-        });
+        let inst = match self.program.get(&head)? {
+            Some(inst) => inst,
+            None => {
+                return Err(format!(
+                    "uncovered case: have no tail for head ({}) in program",
+                    head
+                ))
+            }
+        };
         conf.state = inst.tail.state;
         conf.set_symbol(inst.tail.symbol.clone());
         conf.shift(inst.tail.direction, self.default.clone());
-        conf
+        Ok(conf)
     }
+
     /// Executes [`Configuration`] until predicate is `false` by mutation.
     ///
     /// # Panics
@@ -59,21 +63,23 @@ impl<S: Symbol> TuringMachine<S> for Classic<S> {
         &self,
         mut conf: Configuration<S>,
         until: impl Fn(&Configuration<S>) -> bool,
-    ) -> Configuration<S> {
+    ) -> Result<Configuration<S>, String> {
         while !until(&conf) {
             let head = Head::new(conf.state, conf.get_symbol().clone());
-            let inst = self.program.get(&head).unwrap().expect(
-                format!(
-                    "uncovered case: have no tail for head ({}) in program",
-                    head
-                )
-                .as_str(),
-            );
+            let inst = match self.program.get(&head)? {
+                Some(inst) => inst,
+                None => {
+                    return Err(format!(
+                        "uncovered case: have no tail for head ({}) in program",
+                        head
+                    ))
+                }
+            };
             conf.state = inst.tail.state;
             conf.set_symbol(inst.tail.symbol.clone());
             conf.shift(inst.tail.direction, self.default.clone());
         }
-        conf
+        Ok(conf)
     }
 }
 
@@ -101,10 +107,8 @@ impl<S: Symbol> With<Classic<S>> for Classic<S> {
                 self.default, other.default,
             ));
         }
-        match self.program.with(&other.program) {
-            Ok(program) => Classic::new(program, self.default.clone()),
-            Err(msg) => Err(msg),
-        }
+        let program = self.program.with(&other.program)?;
+        Classic::new(program, self.default.clone())
     }
 }
 

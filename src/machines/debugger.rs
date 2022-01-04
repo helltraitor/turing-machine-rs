@@ -39,8 +39,8 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 ///     let mut buffer = c_buffer.borrow_mut();
 ///         buffer.push('c');
 ///     });
-///     let conf = debugger.execute_once(conf);
-///     debugger.execute_once(conf);
+///     let conf = debugger.execute_once(conf).unwrap();
+///     debugger.execute_once(conf).unwrap();
 ///     assert_eq!(String::from("cc"), buffer.deref().borrow().as_ref());
 /// }
 /// ```
@@ -99,8 +99,8 @@ where
     /// All match cases must and are covered.
     ///
     /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
-    fn execute_once(&self, conf: Configuration<S>) -> Configuration<S> {
-        let next = self.machine.execute_once(conf.clone());
+    fn execute_once(&self, conf: Configuration<S>) -> Result<Configuration<S>, String> {
+        let next = self.machine.execute_once(conf.clone())?;
         if let Some(ref c_handler) = self.c_handler {
             c_handler(&conf);
         }
@@ -111,7 +111,7 @@ where
                 (old, new) if old == new => Direction::Center,
                 (old, new) if old > new => Direction::Right,
                 (old, new) => panic!(
-                    "internal error: not all compare cases are covered with old is {} and new is {}",
+                    "execute_once error: not all compare cases are covered for old {} and new {} indexes",
                     old,
                     new
                 )
@@ -119,7 +119,7 @@ where
             let tail = Tail::new(next.state, next.get_symbol().clone(), direction);
             i_handler(&head, &tail);
         }
-        next
+        Ok(next)
     }
 
     /// Executes [`Configuration`] until predicate is `false` by mutation.
@@ -130,14 +130,13 @@ where
         &self,
         mut conf: Configuration<S>,
         until: impl Fn(&Configuration<S>) -> bool,
-    ) -> Configuration<S> {
+    ) -> Result<Configuration<S>, String> {
         if self.c_handler.is_none() && self.i_handler.is_none() {
             return self.machine.execute_until(conf, until);
         }
-
         while !until(&conf) {
-            conf = self.execute_once(conf);
+            conf = self.execute_once(conf)?;
         }
-        conf
+        Ok(conf)
     }
 }

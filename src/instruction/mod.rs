@@ -7,8 +7,6 @@
 //! fields for another structs. This module doesn't provides any checks
 //! and warranties except of no panic, no errors and no self changing
 //! (no one of methods can change these structs).
-//!
-//! All of these structs could be used without type annotations.
 
 mod direction;
 mod head;
@@ -38,8 +36,7 @@ pub struct Instruction<S: Symbol> {
 }
 
 impl<S: Symbol> Instruction<S> {
-    /// Constructs a new [`Instruction`] with head and tail. Instruction struct
-    /// constructs immediatly that's why doesn't need to use type annotations.
+    /// Constructs a new [`Instruction`] with the [`Head`] and the [`Tail`].
     pub fn new(head: Head<S>, tail: Tail<S>) -> Self {
         Instruction { head, tail }
     }

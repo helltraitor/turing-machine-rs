@@ -22,7 +22,7 @@ fn main() {
     let machine = Classic::new(program, '_').unwrap();
 
     let test = Tape::from("test");
-    let nice = machine.translate_nrm(test.clone());
+    let nice = machine.translate_nrm(test.clone()).unwrap();
     println!(
         "{} {}!",
         String::from_iter(nice.as_vec()),

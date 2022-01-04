@@ -3,9 +3,6 @@
 //! This module provides [`Program`] which is using for initialization
 //! a [`crate::TuringMachine`] and [`ExtendBy`] trait for [`Program`] which
 //! can be used for activating additional functional (pretty usefull).
-//!
-//! # Warning
-//! [`Program`] can panic!
 
 use std::fmt::{Display, Error, Formatter};
 use std::mem::replace;
@@ -42,8 +39,9 @@ impl<S: Symbol> Program<S> {
         &self.alphabet
     }
 
-    /// Returns [`Some(Instruction)`] for [`Head`] if it exitsts in the program
-    /// otherwise [`None`].
+    /// Returns [`Ok(Some)`] for [`Head`] if it contains in the program,
+    /// [`Ok(None)`] if this head is not in the program and [`Err(String)`]
+    /// if [`Head`] state is large then [`Program`] last state.
     pub fn get(&self, head: &Head<S>) -> Result<Option<&Instruction<S>>, String> {
         if self.l_state < head.state {
             return Err(format!(
