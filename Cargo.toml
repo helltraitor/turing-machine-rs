@@ -14,9 +14,3 @@ Open library for implementation Turing Machines.
 categories = ["mathematics", "science", "simulation"]
 keywords = ["cross-platform", "math", "science", "simulation", "turing-machine"]
 exclude = [".github/*", ".gitignore"]
-
-
-[features]
-default = []
-string-as-copy = []
-str-as-copy = []

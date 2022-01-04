@@ -1,16 +1,14 @@
-use crate::instruction::{Direction, Head, Tail};
+use crate::instruction::{Head, Move, Tail};
 use crate::state::Configuration;
 use crate::{Symbol, TuringMachine};
 
 type CHandler<S> = Box<dyn Fn(&Configuration<S>)>;
 type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 
-#[allow(clippy::needless_doctest_main)]
 /// [`Debugger`] is an super useful [`TuringMachine`] for debugging another
-/// Turing machines! All Turing Machines in tests were debugging by this machine.
+/// Turing machine! This machine debugged all Turing machines in tests.
 ///
-/// Note: this machine is not implementing [`crate::With`] trait so it must be
-/// used only after using `with` for superposition.
+/// Note: this machine is not implementing [`crate::With`].
 ///
 /// # Examples
 /// ```rust
@@ -19,29 +17,33 @@ type IHandler<S> = Box<dyn Fn(&Head<S>, &Tail<S>)>;
 /// use std::rc::Rc;
 ///
 /// use turing_machine_rs::TuringMachine;
-/// use turing_machine_rs::instruction::Direction;
+/// use turing_machine_rs::instruction::{Move, State};
 /// use turing_machine_rs::machines::{Debugger, Classic};
-/// use turing_machine_rs::program::{ExtendBy, Program};
+/// use turing_machine_rs::program::{Extend, Program};
 /// use turing_machine_rs::state::{Configuration, Tape};
 ///
-/// fn main() {
-///     let mut program = Program::new(vec![' '], 1);
-///     program.extend_by([(1, ' ', 1, ' ', Direction::Right)]);
-///     let machine = Classic::new(program, ' ');
+/// fn main() -> Result<(), String> {
+///     let mut program = Program::new(vec![' '], State(1));
+///     program.extend([(1, ' ', 1, ' ', Move::Right)])?;
 ///
+///     let machine = Classic::new(program, ' ')?;
 ///     let mut debugger = Debugger::new(machine);
-///     let conf = Configuration::new_nrm(Tape::from("   "));
+///
+///     let conf = Configuration::new_nrm(Tape::from("   "))?;
 ///
 ///     let buffer = Rc::new(RefCell::new(String::new()));
 ///
 ///     let c_buffer = buffer.clone();
 ///     debugger.set_c_handler(move |_| {
-///     let mut buffer = c_buffer.borrow_mut();
+///         let mut buffer = c_buffer.borrow_mut();
 ///         buffer.push('c');
 ///     });
-///     let conf = debugger.execute_once(conf);
-///     debugger.execute_once(conf);
+///
+///     let conf = debugger.execute_once(conf)?;
+///     debugger.execute_once(conf)?;
+///
 ///     assert_eq!(String::from("cc"), buffer.deref().borrow().as_ref());
+///     Ok(())
 /// }
 /// ```
 pub struct Debugger<Machine, S: Symbol>
@@ -58,8 +60,9 @@ where
     Machine: TuringMachine<S>,
 {
     /// Constructs a new [`Debugger`] with a [`TuringMachine`] and no handlers.
-    /// For setup handlers, use must use `mut` within [`Debugger::set_c_handler`]
-    /// and [`Debugger::set_i_handler`].
+    ///
+    /// For setup handlers, use the [`Debugger::set_c_handler`]
+    /// and the [`Debugger::set_i_handler`] methods.
     pub fn new(machine: Machine) -> Self {
         Debugger {
             machine,
@@ -91,52 +94,52 @@ where
 {
     /// Executes [`Configuration`] once by mutation.
     ///
-    /// Works quickly when no handler set (but probably you don't wnat to use
-    /// the debugger without tools).
+    /// Works quickly when no handler is set (but you probably don't want to
+    /// use the debugger without the debugging).
     ///
     /// # Panics
-    /// [`Debugger`] could panic only if source code is broken - this is a bug.
+    /// [`Debugger`] could panic only if source code is broken - this would be a bug.
     /// All match cases must and are covered.
-    /// So you can open issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
-    fn execute_once(&self, conf: Configuration<S>) -> Configuration<S> {
-        let next = self.machine.execute_once(conf.clone());
+    ///
+    /// So you could open an issue on [GitHub](https://github.com/Helltraitor/turing-machine-rs).
+    fn execute_once(&self, conf: Configuration<S>) -> Result<Configuration<S>, String> {
+        let next = self.machine.execute_once(conf.clone())?;
         if let Some(ref c_handler) = self.c_handler {
             c_handler(&conf);
         }
         if let Some(ref i_handler) = self.i_handler {
             let head = Head::new(conf.state, conf.get_symbol().clone());
-            let direction = match (conf.index(), next.index()) {
-                (old, new) if old < new => Direction::Right,
-                (old, new) if old == new => Direction::Center,
-                (old, new) if old > new => Direction::Right,
+            let movement = match (conf.index(), next.index()) {
+                (old, new) if old < new => Move::Right,
+                (old, new) if old == new => Move::None,
+                (old, new) if old > new => Move::Right,
                 (old, new) => panic!(
-                    "internal error: not all compare cases are covered with old is {} and new is {}",
+                    "execute_once error: not all compare cases are covered for old {} and new {} indexes",
                     old,
                     new
                 )
             };
-            let tail = Tail::new(next.state, next.get_symbol().clone(), direction);
+            let tail = Tail::new(next.state, next.get_symbol().clone(), movement);
             i_handler(&head, &tail);
         }
-        next
+        Ok(next)
     }
 
     /// Executes [`Configuration`] until predicate is `false` by mutation.
     ///
-    /// Uses [`Debugger::execute_once`] in loop. Works quickly when no handler
-    /// set (but probably you don't wnat to use the debugger without tools).
+    /// Uses the [`Debugger::execute_once`] method in the loop. Works quickly
+    /// when no handler set (but probably you don't wnat to use the debugger without tools).
     fn execute_until(
         &self,
         mut conf: Configuration<S>,
         until: impl Fn(&Configuration<S>) -> bool,
-    ) -> Configuration<S> {
+    ) -> Result<Configuration<S>, String> {
         if self.c_handler.is_none() && self.i_handler.is_none() {
             return self.machine.execute_until(conf, until);
         }
-
         while !until(&conf) {
-            conf = self.execute_once(conf);
+            conf = self.execute_once(conf)?;
         }
-        conf
+        Ok(conf)
     }
 }

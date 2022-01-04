@@ -101,23 +101,20 @@ mod clone {
 
     #[test]
     fn creation() {
-        let _: Tape<Box<char>> = Tape::from("test");
+        let _ = Tape::new("test".chars().map(|ch| Box::new(ch)));
     }
 
     #[test]
     fn as_vec() {
-        let tape: Tape<Box<char>> = Tape::from("test");
+        let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
         let vec = tape.as_vec();
 
-        assert_eq!(
-            *vec,
-            vec![Box::new('t'), Box::new('e'), Box::new('s'), Box::new('t')]
-        );
+        assert_eq!(*vec, Vec::from_iter("test".chars().map(|ch| Box::new(ch))));
     }
 
     #[test]
     fn get() {
-        let tape = Tape::from("test");
+        let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(tape.get(0), Some(&Box::new('t')));
         assert_eq!(tape.get(2), Some(&Box::new('s')));
@@ -125,27 +122,27 @@ mod clone {
 
     #[test]
     fn insert() {
-        let mut tape = Tape::from("test");
+        let mut tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
         tape.insert(0, Box::new('0'));
         tape.insert(5, Box::new('1'));
 
-        let expected = Tape::from("0test1");
+        let expected = Tape::new("0test1".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(expected, tape);
     }
 
     #[test]
     fn is_empty() {
-        let tape: Tape<Box<char>> = Tape::from("");
+        let tape: Tape<Box<char>> = Tape::new([]);
         assert!(tape.is_empty());
 
-        let tape: Tape<Box<char>> = Tape::from("_");
+        let tape = Tape::new([Box::new("_")]);
         assert!(!tape.is_empty());
     }
 
     #[test]
     fn len() {
-        let mut tape = Tape::from("test");
+        let mut tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
         assert_eq!(tape.len(), 4);
 
         tape.insert(0, Box::new('0'));
@@ -154,46 +151,23 @@ mod clone {
 
     #[test]
     fn set() {
-        let mut tape = Tape::from("test");
+        let mut tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
         tape.set(0, Box::new('n'));
         tape.set(1, Box::new('i'));
         tape.set(2, Box::new('c'));
         tape.set(3, Box::new('e'));
 
-        let expected = Tape::from("nice");
+        let expected = Tape::new("nice".chars().map(|ch| Box::new(ch)));
 
         assert_eq!(expected, tape);
     }
 
     #[test]
     fn to_string() {
-        let tape: Tape<Box<char>> = Tape::from("test");
+        let tape = Tape::new("test".chars().map(|ch| Box::new(ch)));
 
         let expected = String::from("test");
 
         assert_eq!(expected, tape.to_string());
-    }
-
-    #[test]
-    fn from_string() {
-        let tape: Tape<Box<char>> = Tape::from(String::from("test"));
-
-        let expected = Tape::from("test");
-
-        assert_eq!(expected, tape);
-    }
-
-    #[test]
-    fn from_str() {
-        let tape: Tape<Box<char>> = Tape::from("test");
-
-        let expected = Tape::new(vec![
-            Box::new('t'),
-            Box::new('e'),
-            Box::new('s'),
-            Box::new('t'),
-        ]);
-
-        assert_eq!(expected, tape);
     }
 }
