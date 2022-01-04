@@ -22,68 +22,71 @@ A library for implementing any Turing machine with minimal limitations for the R
 [actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
 [actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
 
-[API Docs](https://docs.rs/turing-machine-rs)
+[Docs](https://docs.rs/turing-machine-rs)
 
 ## Overview
-Turing Machine RS includes a "Classic" realization for Turing Machine (a minimal version for simulation) and a "Debugger" Turing machine that works with any type that implements the Turing Machine Trait.
+Turing Machine RS includes a "Classic" realization for Turing Machine (a minimal version for simulation) and a "Debugger" Turing Machine that works with any type that implements the Turing Machine Trait.
 
 ## Example
-This is a simple example of a Turing Machine that replaces nice by test and test by nice chars.
+This is a simple example of a Turing Machine that replaces `nice` by `test` and `test` by `nice` words.
 
 ```rust
 extern crate turing_machine_rs;
 
-use turing_machine_rs::instruction::Direction;
+use turing_machine_rs::instruction::{Move, State};
 use turing_machine_rs::machines::Classic;
 use turing_machine_rs::program::{Extend, Program};
 use turing_machine_rs::state::Tape;
 use turing_machine_rs::TuringMachine;
 
-fn main() {
-    let mut program = Program::new(vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'], 4);
-    // Trait for more comfortable coding
+// For more comfortable coding, use Result<(), String>:
+// `?` postfix symbol is better then `.unwrap()` postfix method call.
+fn main() -> Result<(), String> {
+    let alphabet = vec!['t', 'e', 's', 'n', 'i', 'c', 'e', '_'];
+    let mut program = Program::new(alphabet, State(4));
     program.extend([
-        // Instruction consists of Head and Tail parts
-        // Head state, Head symbol, Tail state, Tail symbol, Tail Direction
-        (1, 't', 2, 'n', Direction::Right),
-        (2, 'e', 3, 'i', Direction::Right),
-        (3, 's', 4, 'c', Direction::Right),
-        (4, 't', 0, 'e', Direction::Center),
+        (1, 't', 2, 'n', Move::Right),
+        (2, 'e', 3, 'i', Move::Right),
+        (3, 's', 4, 'c', Move::Right),
+        (4, 't', 0, 'e', Move::None),
         // Revers
-        (1, 'n', 2, 't', Direction::Right),
-        (2, 'i', 3, 'e', Direction::Right),
-        (3, 'c', 4, 's', Direction::Right),
-        (4, 'e', 0, 't', Direction::Center),
-    ]);
-    let machine = Classic::new(program, '_');
+        (1, 'n', 2, 't', Move::Right),
+        (2, 'i', 3, 'e', Move::Right),
+        (3, 'c', 4, 's', Move::Right),
+        (4, 'e', 0, 't', Move::None),
+    ])?;
+    let machine = Classic::new(program, '_')?;
 
     let test = Tape::from("test");
-    let nice = machine.translate_nrm(test.clone());
+    let nice = machine.translate_nrm(test.clone())?;
     println!(
         "{} {}!",
         String::from_iter(nice.as_vec()),
         String::from_iter(test.as_vec())
     );
+    Ok(())
 }
 ```
 
 But this library is not just for the simplest types: you can even use other Turing machines as symbols! More examples can be found [here][examples].
 
-To see a list of the available features flags that can be enabled, check [docs][feature-flag-docs].
-
 ## Getting Help
-First, read [examples][examples] or [api][api-documentation]. If examples can't provide answers for you, then you can try to read docs, and after all of that, you can contact me: <helltraitor@hotmail.com>
+First, read [examples][examples] or [docs][docs]. If examples can't provide answers for you, then you can try to read docs, and after all of that, you can contact me: <helltraitor@hotmail.com>
 
 ### Major links:
 * [Examples][examples]
-* [API documentation][api-documentation]
+* [Docs][docs]
+* [Repository][repo]
 
 [examples]: https://github.com/Helltraitor/turing-machine-rs/tree/main/examples
-[api-documentation]: https://docs.rs/turing-machine-rs
+[docs]: https://docs.rs/turing-machine-rs
+[repo]: https://github.com/Helltraitor/turing-machine-rs
 
 ## Contributing
 If you want to improve this crate, just open an issue (you can use [example][issue-example] as a template). The issue must contain these headings: `Problem` or `Enhancement`, `Motivation` (reasons to solve the problem or implement the enhancement). It would be very useful to add `Useful sources` for documentation and examples.
+
 [See example.][issue-example]
+
 [issue-example]: https://github.com/Helltraitor/turing-machine-rs/issues/2
 
 ## Supported Rust Versions
@@ -95,6 +98,4 @@ This project is licensed under the [MIT license].
 [MIT license]: https://github.com/Helltraitor/turing-machine-rs/blob/main/LICENSE
 
 ### Contribution
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in Turing Machine RS by you, shall be licensed as MIT, without any additional
-terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Turing Machine RS by you, shall be licensed as MIT, without any additional terms or conditions.

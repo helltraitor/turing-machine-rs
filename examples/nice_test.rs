@@ -31,6 +31,5 @@ fn main() -> Result<(), String> {
         String::from_iter(nice.as_vec()),
         String::from_iter(test.as_vec())
     );
-
     Ok(())
 }
