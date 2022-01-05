@@ -19,8 +19,8 @@ A library for implementing any Turing machine with minimal limitations for the R
 [actions-2021-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_2021.yml
 [actions-stable-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
 [actions-stable-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
-[actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml/badge.svg
-[actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_stable.yml
+[actions-nightly-badge]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_nightly.yml/badge.svg
+[actions-nightly-url]: https://github.com/Helltraitor/turing-machine-rs/actions/workflows/rust_nightly.yml
 
 [Docs](https://docs.rs/turing-machine-rs)
 
